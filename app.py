@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
-from src.core.ai_engine import (
+from ai_engine import (
     build_unis_context,
     chat_rushd,
     generate_dashboard_report,
