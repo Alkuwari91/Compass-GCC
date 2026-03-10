@@ -110,8 +110,8 @@ div[data-testid="stExpander"] details>summary:hover{background:var(--teal-light)
 # ─────────────────────────────────────────────
 ROOT       = Path(__file__).resolve().parent
 DATA_DIR   = ROOT / "data"
-UNIS_PATH  = DATA_DIR / "universities.csv"
-PROGS_PATH = DATA_DIR / "programs.csv"
+UNIS_PATH  = ROOT / "universities.csv"
+PROGS_PATH = ROOT / "programs.csv"
 
 
 @st.cache_data(show_spinner=False)
