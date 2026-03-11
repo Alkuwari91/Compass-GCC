@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -109,9 +113,9 @@ div[data-testid="stExpander"] details>summary:hover{background:var(--teal-light)
 # Data helpers
 # ─────────────────────────────────────────────
 ROOT       = Path(__file__).resolve().parent
-DATA_DIR   = ROOT / "data"
-UNIS_PATH  = ROOT / "universities.csv"
-PROGS_PATH = ROOT / "programs.csv"
+DATA_DIR   = ROOT
+UNIS_PATH  = DATA_DIR / "universities.csv"
+PROGS_PATH = DATA_DIR / "programs.csv"
 
 
 @st.cache_data(show_spinner=False)
