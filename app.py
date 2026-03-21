@@ -452,13 +452,13 @@ elif st.session_state.page == "رُشد":
             "مرحباً، أنا رُشد.\n\nأخبرني عن نفسك:\n- التخصص الذي تريده\n- الدولة المفضلة\n- معدلك التقريبي\n- هل عندك IELTS وكم درجتك؟\n\nوسأرشّح لك الجامعات المناسبة."}]
 
     for msg in st.session_state.rushd_messages:
-        with st.chat_message(msg["role"], avatar="R" if msg["role"]=="assistant" else "U"):
+        with st.chat_message(msg["role"], avatar="🧭" if msg["role"]=="assistant" else "🎓"):
             st.markdown(msg["content"])
 
     if user_input := st.chat_input("اكتب رسالتك..."):
         st.session_state.rushd_messages.append({"role":"user","content":user_input})
-        with st.chat_message("user", avatar="U"): st.markdown(user_input)
-        with st.chat_message("assistant", avatar="R"):
+        with st.chat_message("user", avatar="🎓"): st.markdown(user_input)
+        with st.chat_message("assistant", avatar="🧭"):
             with st.spinner(""):
                 history=[m for m in st.session_state.rushd_messages
                          if not(m["role"]=="assistant" and "مرحباً" in m["content"])]
