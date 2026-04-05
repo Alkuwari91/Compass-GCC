@@ -180,19 +180,39 @@ st.markdown(CSS, unsafe_allow_html=True)
 if "page" not in st.session_state: st.session_state.page = "الرئيسية"
 PAGES = ["الرئيسية","بحث الجامعات","المقارنة","رُشد","البيانات","من نحن"]
 
-active = st.session_state.page
-nav_html = "".join([f'<div class="nav-btn {"on" if p==active else ""}">{p}</div>' for p in PAGES])
-st.markdown(f'<div class="nav"><div class="nav-logo">بو<span>صلة</span></div><div class="nav-links">{nav_html}</div></div>', unsafe_allow_html=True)
-
-nav_cols = st.columns(len(PAGES))
-for i, name in enumerate(PAGES):
-    if nav_cols[i].button(name, key=f"nav_{name}", use_container_width=True):
-        st.session_state.page = name; st.rerun()
-
+# ── Nav bar: HTML visual + Streamlit buttons styled as nav ──
 st.markdown("""<style>
-div[data-testid="stHorizontalBlock"]:nth-of-type(1){position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:200!important;gap:0!important;padding:0!important;height:60px!important;}
-div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{position:absolute!important;opacity:0!important;pointer-events:auto!important;height:60px!important;border-radius:0!important;border:none!important;z-index:201!important;}
+.nav{background:#FEFFFF;border-bottom:1px solid #DEF2F1;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:58px;box-shadow:0 1px 8px rgba(46,196,182,.07);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#17252A;}
+.nav-logo span{color:#2EC4B6;}
+.nav-links{display:flex;gap:2px;}
+.nav-lnk{font-size:13px;font-weight:500;color:#6B7280;padding:6px 12px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.nav-lnk:hover{background:#EEF8F8;color:#2B7A77;}
+.nav-lnk.on{background:#2EC4B6;color:#17252A;font-weight:700;}
+/* Style Streamlit nav buttons to look like nav links */
+div.nav-row button{background:transparent!important;border:none!important;color:#6B7280!important;font-size:13px!important;font-weight:500!important;font-family:'IBM Plex Sans Arabic',sans-serif!important;padding:6px 12px!important;border-radius:7px!important;height:auto!important;box-shadow:none!important;transition:all .15s!important;}
+div.nav-row button:hover{background:#EEF8F8!important;color:#2B7A77!important;}
+div.nav-row{display:flex;gap:2px;align-items:center;}
+/* sticky nav */
+[data-testid="stMainBlockContainer"]{padding-top:58px!important;}
 </style>""", unsafe_allow_html=True)
+
+# الـ nav bar: لوغو + أزرار Streamlit مصممة كـ nav
+logo_col, nav_area = st.columns([1, 4])
+with logo_col:
+    st.markdown("<div style=\"font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#17252A;padding:12px 0 12px 16px;\">بو<span style=\"color:#2EC4B6;\">صلة</span></div>", unsafe_allow_html=True)
+with nav_area:
+    st.markdown('<div class="nav-row" style="display:flex;gap:2px;justify-content:flex-end;padding:8px 0;">', unsafe_allow_html=True)
+    nc = st.columns(len(PAGES))
+    for i, name in enumerate(PAGES):
+        is_active = st.session_state.page == name
+        btn_style = "background:#2EC4B6!important;color:#17252A!important;font-weight:700!important;" if is_active else ""
+        if nc[i].button(name, key=f"nav_{name}", use_container_width=True):
+            st.session_state.page = name; st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# خط فاصل تحت الـ nav
+st.markdown('<hr style="margin:0;border:none;border-top:1px solid #DEF2F1;">', unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════
