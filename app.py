@@ -26,7 +26,7 @@ def inject_css():
   --gold-soft:rgba(212,168,83,0.14);
   --text-1:#EAEDF2;
   --text-2:#8A94A6;
-  --text-3:#3D4454;
+  --text-3:#5A6478;
   --border:rgba(255,255,255,0.06);
   --border-a:rgba(91,95,238,0.35);
 }
@@ -83,13 +83,13 @@ label{direction:rtl!important;text-align:right!important;color:var(--text-2)!imp
 .section-title{font-size:1.7rem;font-weight:900;color:var(--text-1);text-align:center;margin-bottom:28px;letter-spacing:-0.5px;}
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:36px 0;border:none;}
 .chip{display:inline-block;background:var(--indigo-soft);border:1px solid rgba(91,95,238,0.25);color:#9EA2FF;border-radius:6px;padding:3px 12px;font-size:0.8rem;font-weight:700;margin-bottom:20px;}
-.ai-result{background:var(--surface);border:1px solid var(--border-a);border-radius:14px;padding:26px 28px;line-height:2;color:var(--text-1);margin-top:14px;}
+.ai-result{background:var(--surface);border:1px solid var(--border-a);border-radius:14px;padding:26px 28px;line-height:2;color:var(--text-1)!important;margin-top:14px;}
 .ai-result-label{font-size:0.7rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--indigo);margin-bottom:14px;display:block;}
 .gap-result{background:var(--surface);border:1px solid rgba(212,168,83,0.2);border-radius:14px;padding:26px 28px;line-height:2.1;color:var(--text-1);margin-top:14px;}
 .comp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;}
 .comp-head{font-size:0.95rem;font-weight:900;color:var(--text-1);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .comp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
-.comp-label{color:var(--text-3);font-size:0.82rem;font-weight:600;}
+.comp-label{color:var(--text-2);font-size:0.82rem;font-weight:600;}
 .comp-val{color:var(--text-1);font-size:0.85rem;font-weight:700;}
 div[data-testid="stExpander"]{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;overflow:hidden!important;margin-bottom:10px!important;}
 div[data-testid="stExpander"] details>summary p{font-weight:800!important;color:var(--text-1)!important;font-size:0.95rem!important;}
@@ -97,6 +97,9 @@ div[data-testid="stExpander"] details>div{color:var(--text-2)!important;line-hei
 div[data-baseweb="select"]>div{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:9px!important;color:var(--text-1)!important;}
 .stTextInput>div>div{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:9px!important;}
 input{color:var(--text-1)!important;}
+input::placeholder,textarea::placeholder{color:var(--text-3)!important;opacity:1!important;}
+.stTextArea>div>div{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:9px!important;}
+textarea{color:var(--text-1)!important;background:transparent!important;}
 [data-testid="stChatMessage"]{background:var(--card)!important;border:1px solid var(--border)!important;border-radius:12px!important;direction:rtl!important;margin-bottom:10px!important;}
 .stLinkButton a{background:var(--indigo-soft)!important;border:1px solid rgba(91,95,238,0.25)!important;color:#9EA2FF!important;border-radius:8px!important;font-weight:700!important;font-size:0.83rem!important;}
 .stLinkButton a:hover{background:var(--indigo)!important;color:white!important;}
@@ -369,9 +372,11 @@ elif st.session_state.page == "المقارنة":
     # ── المقارنة الذكية ──
     st.markdown('<hr class="divider">', unsafe_allow_html=True)
     st.markdown('<div class="section-label">الذكاء الاصطناعي</div>', unsafe_allow_html=True)
-    profile_txt = st.text_input("ملفك الأكاديمي (اختياري — مثال: طالب هندسة، IELTS 6.5، يفضل المنح)",
-                                placeholder="اكتب ملفك لتحصل على توصية مخصصة...",
-                                key="comp_profile")
+    st.markdown('<p style="color:var(--text-2);font-size:.88rem;margin:0 0 4px;">ملفك الأكاديمي <span style="color:var(--text-3);font-size:.8rem;">(اختياري)</span></p>', unsafe_allow_html=True)
+    profile_txt = st.text_input("",
+                                placeholder="مثال: طالب هندسة، IELTS 6.5، يفضل المنح",
+                                key="comp_profile",
+                                label_visibility="collapsed")
     if st.button("اطلب مقارنة ذكية", use_container_width=True, key="btn_compare_ai"):
         unis_data = [comp[comp["uni_id"]==uid].iloc[0].to_dict() for uid in selected if uid in comp["uni_id"].values]
         with st.spinner("جاري تحليل الجامعات..."):
