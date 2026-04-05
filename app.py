@@ -197,8 +197,8 @@ div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{position:absolute!imp
 # الرئيسية
 # ══════════════════════════════════════════════
 if st.session_state.page == "الرئيسية":
-    st.markdown(f"""
-<style>
+    # CSS بدون f-string
+    st.markdown("""<style>
 .baw-hero{background:#17252A;padding:72px 48px 64px;display:flex;justify-content:space-between;align-items:center;gap:48px;direction:rtl;}
 .baw-hero-left{flex:1.1;}
 .baw-hero-pill{display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2EC4B6;margin-bottom:24px;}
@@ -210,8 +210,10 @@ if st.session_state.page == "الرئيسية":
 .baw-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px 16px;text-align:center;}
 .baw-stat-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:5px;}
 .baw-stat-l{font-size:12px;color:rgba(255,255,255,.4);font-weight:500;}
-</style>
-<div class="baw-hero">
+</style>""", unsafe_allow_html=True)
+
+    # HTML بـ f-string للـ variables فقط
+    st.markdown(f"""<div class="baw-hero">
   <div class="baw-hero-left">
     <div class="baw-hero-pill"><span class="baw-hero-dot"></span>مدعوم بالذكاء الاصطناعي</div>
     <div class="baw-hero-h1">بو<em>صلة</em></div>
@@ -223,8 +225,7 @@ if st.session_state.page == "الرئيسية":
     <div class="baw-stat"><div class="baw-stat-n">{N_PROGS}+</div><div class="baw-stat-l">برنامج</div></div>
     <div class="baw-stat"><div class="baw-stat-n">AI</div><div class="baw-stat-l">توصيات ذكية</div></div>
   </div>
-</div>
-""", unsafe_allow_html=True)
+</div>""", unsafe_allow_html=True)
 
     st.markdown('<div class="wrap">', unsafe_allow_html=True)
     _, col, _ = st.columns([0.3, 5, 0.3])
