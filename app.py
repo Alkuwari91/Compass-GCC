@@ -117,6 +117,10 @@ div[data-testid="stExpander"] details>div{color:var(--muted)!important;line-heig
 [data-testid="stChatMessage"]{background:var(--white)!important;border:1.5px solid var(--border)!important;border-radius:var(--r)!important;direction:rtl!important;margin-bottom:8px!important;}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(46,196,182,.3);border-radius:4px;}
+/* Hero full-bleed fix */
+.baw-hero{margin-left:calc(-50vw + 50%) !important;margin-right:calc(-50vw + 50%) !important;width:100vw !important;padding-left:calc(48px + (50vw - 50%)) !important;padding-right:calc(48px + (50vw - 50%)) !important;}
+[data-testid="stMainBlockContainer"]{padding-left:0!important;padding-right:0!important;max-width:100%!important;}
+[data-testid="block-container"]{padding:0!important;max-width:100%!important;}
 </style>"""
 
 # ─── Data ───
@@ -193,45 +197,34 @@ div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{position:absolute!imp
 # الرئيسية
 # ══════════════════════════════════════════════
 if st.session_state.page == "الرئيسية":
-    # ── Hero: built with native Streamlit elements + CSS targeting ──
-    st.markdown("""<style>
-.hero-wrap{background:#17252A;padding:72px 48px 64px;margin:-1px 0 0;}
-.hero-title{font-family:'Syne',sans-serif;font-size:60px;font-weight:800;color:#FEFFFF;line-height:1.0;letter-spacing:-2px;margin:20px 0 16px;}
-.hero-title em{color:#2EC4B6;font-style:normal;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2EC4B6;}
-.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#2EC4B6;animation:pulse 2s infinite;}
-.hero-desc{font-size:15px;color:rgba(255,255,255,.5);line-height:1.85;margin-top:4px;}
-.stat-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px 16px;text-align:center;}
-.stat-box:hover{background:rgba(46,196,182,.08);border-color:rgba(46,196,182,.3);}
-.stat-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:5px;}
-.stat-l{font-size:12px;color:rgba(255,255,255,.4);font-weight:500;}
-/* target the hero stHorizontalBlock */
-div[data-testid="stHorizontalBlock"].hero-row > div[data-testid="column"]{background:#17252A!important;}
-</style>""", unsafe_allow_html=True)
-
-    st.markdown('<div class="hero-wrap">', unsafe_allow_html=True)
-    h_left, h_right = st.columns([1.1, 0.9])
-    with h_left:
-        st.markdown(f"""
-        <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>مدعوم بالذكاء الاصطناعي</div>
-        <div class="hero-title">بو<em>صلة</em></div>
-        <div class="hero-desc">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
-        """, unsafe_allow_html=True)
-    with h_right:
-        r1, r2 = st.columns(2)
-        r1.markdown(f'<div class="stat-box"><div class="stat-n">{N_UNIS}+</div><div class="stat-l">جامعة</div></div>', unsafe_allow_html=True)
-        r2.markdown(f'<div class="stat-box"><div class="stat-n">{N_CTRY}</div><div class="stat-l">دولة خليجية</div></div>', unsafe_allow_html=True)
-        r3, r4 = st.columns(2)
-        r3.markdown(f'<div class="stat-box"><div class="stat-n">{N_PROGS}+</div><div class="stat-l">برنامج</div></div>', unsafe_allow_html=True)
-        r4.markdown(f'<div class="stat-box"><div class="stat-n">AI</div><div class="stat-l">توصيات ذكية</div></div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # CSS: color the hero columns dark
-    st.markdown("""<style>
-div[data-testid="stMain"] > div > div > div:nth-of-type(3) > div[data-testid="stVerticalBlock"] > div:first-child{background:#17252A!important;padding:0!important;}
-div[data-testid="stMain"] > div > div > div:nth-of-type(3) > div[data-testid="stVerticalBlock"] > div:first-child [data-testid="stHorizontalBlock"]{background:#17252A!important;padding:0 48px 64px!important;}
-div[data-testid="stMain"] > div > div > div:nth-of-type(3) > div[data-testid="stVerticalBlock"] > div:first-child [data-testid="column"]{background:#17252A!important;}
-</style>""", unsafe_allow_html=True)
+    st.markdown(f"""
+<style>
+.baw-hero{background:#17252A;padding:72px 48px 64px;display:flex;justify-content:space-between;align-items:center;gap:48px;direction:rtl;}
+.baw-hero-left{flex:1.1;}
+.baw-hero-pill{display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2EC4B6;margin-bottom:24px;}
+.baw-hero-dot{width:6px;height:6px;border-radius:50%;background:#2EC4B6;display:inline-block;animation:pulse 2s infinite;}
+.baw-hero-h1{font-family:'Syne',sans-serif;font-size:60px;font-weight:800;color:#FEFFFF;line-height:1.0;letter-spacing:-2px;margin-bottom:16px;}
+.baw-hero-h1 em{color:#2EC4B6;font-style:normal;}
+.baw-hero-sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.85;max-width:440px;}
+.baw-hero-right{flex:0.9;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.baw-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px 16px;text-align:center;}
+.baw-stat-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:5px;}
+.baw-stat-l{font-size:12px;color:rgba(255,255,255,.4);font-weight:500;}
+</style>
+<div class="baw-hero">
+  <div class="baw-hero-left">
+    <div class="baw-hero-pill"><span class="baw-hero-dot"></span>مدعوم بالذكاء الاصطناعي</div>
+    <div class="baw-hero-h1">بو<em>صلة</em></div>
+    <div class="baw-hero-sub">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
+  </div>
+  <div class="baw-hero-right">
+    <div class="baw-stat"><div class="baw-stat-n">{N_UNIS}+</div><div class="baw-stat-l">جامعة</div></div>
+    <div class="baw-stat"><div class="baw-stat-n">{N_CTRY}</div><div class="baw-stat-l">دولة خليجية</div></div>
+    <div class="baw-stat"><div class="baw-stat-n">{N_PROGS}+</div><div class="baw-stat-l">برنامج</div></div>
+    <div class="baw-stat"><div class="baw-stat-n">AI</div><div class="baw-stat-l">توصيات ذكية</div></div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown('<div class="wrap">', unsafe_allow_html=True)
     _, col, _ = st.columns([0.3, 5, 0.3])
