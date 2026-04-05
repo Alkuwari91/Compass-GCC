@@ -27,7 +27,7 @@ label{direction:rtl!important;text-align:right!important;color:var(--muted)!impo
 .nav-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);letter-spacing:-0.5px;}
 .nav-logo span{color:var(--teal);}
 .nav-links{display:flex;gap:4px;}
-.nav-btn{font-size:13px;font-weight:600;color:rgba(255,255,255,.5);padding:6px 14px;border-radius:8px;border:none;background:none;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'IBM Plex Sans Arabic',sans-serif;}
+.nav-btn{font-size:13px;font-weight:600;color:#6B7280;padding:6px 14px;border-radius:8px;border:none;background:none;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'IBM Plex Sans Arabic',sans-serif;}
 .nav-btn:hover{background:rgba(255,255,255,.07);color:var(--white);}
 .nav-btn.on{background:var(--teal);color:var(--dark);font-weight:700;}
 
@@ -200,45 +200,122 @@ div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{position:absolute!imp
 # ══════════════════════════════════════════════
 if st.session_state.page == "الرئيسية":
 
-    # Hero كله HTML واحد — لا Streamlit elements بداخله
-    hero_html = f"""
-<div style="background:#17252A;padding:72px 48px 64px;display:flex;align-items:center;gap:48px;direction:rtl;width:100%;">
-  <div style="flex:1.15;">
-    <div style="display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2EC4B6;margin-bottom:24px;">
-      <span style="width:6px;height:6px;border-radius:50%;background:#2EC4B6;display:inline-block;"></span>مدعوم بالذكاء الاصطناعي
-    </div>
-    <div style="font-family:'Syne',sans-serif;font-size:62px;font-weight:800;color:#FEFFFF;line-height:1.0;letter-spacing:-2px;margin-bottom:18px;">بو<span style="color:#2EC4B6;">صلة</span></div>
-    <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.85;max-width:420px;">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
+    # ── Hero: تايبوغرافي كبير، وسط، بدون background ──
+    st.markdown("""<style>
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(46,196,182,.1);border:1px solid rgba(46,196,182,.25);border-radius:100px;padding:5px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2B7A77;}
+.hero-tag-dot{width:5px;height:5px;border-radius:50%;background:#2EC4B6;display:inline-block;animation:pulse 2s infinite;}
+.hero-big{font-family:'Syne',sans-serif;font-size:88px;font-weight:800;color:#17252A;line-height:0.95;letter-spacing:-4px;margin:28px 0 0;}
+.hero-big em{color:#2EC4B6;font-style:normal;}
+.hero-rule{width:56px;height:3px;background:#2EC4B6;border-radius:2px;margin:28px auto;}
+.hero-sub{font-size:17px;color:#3B7A77;line-height:1.8;max-width:560px;margin:0 auto 36px;}
+.hero-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:52px;}
+.hero-btn-p{background:#17252A;color:#FEFFFF;font-weight:700;font-size:13px;padding:13px 28px;border-radius:10px;cursor:pointer;letter-spacing:0.2px;}
+.hero-btn-s{background:white;color:#2B7A77;font-weight:600;font-size:13px;padding:13px 28px;border-radius:10px;border:1.5px solid #DEF2F1;cursor:pointer;}
+.hero-stats{display:flex;justify-content:center;align-items:center;gap:0;border:1px solid #DEF2F1;border-radius:16px;overflow:hidden;max-width:480px;margin:0 auto;}
+.hero-stat-item{flex:1;padding:18px 16px;text-align:center;border-left:1px solid #DEF2F1;}
+.hero-stat-item:last-child{border-left:none;}
+.hero-stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#17252A;line-height:1;}
+.hero-stat-l{font-size:11px;color:#9AACAC;font-weight:500;margin-top:4px;letter-spacing:0.3px;}
+</style>""", unsafe_allow_html=True)
+
+    st.markdown(f"""
+<div style="text-align:center;padding:72px 40px 0;direction:rtl;">
+  <div style="display:flex;justify-content:center;margin-bottom:0;">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>الدليل الذكي للتعليم الخليجي</div>
   </div>
-  <div style="flex:0.85;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
-      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">{N_UNIS}+</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">جامعة</div>
+  <div class="hero-big">بو<em>صلة</em></div>
+  <div class="hero-rule"></div>
+  <div class="hero-sub">اكتشف الجامعات، قارن التخصصات، واتخذ قرارك التعليمي بثقة<br>مع مستشار ذكي يتحدث العربية</div>
+  <div class="hero-btns">
+    <div class="hero-btn-p">ابدأ البحث الآن</div>
+    <div class="hero-btn-s">تحدّث مع رُشد</div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat-item">
+      <div class="hero-stat-n">{N_UNIS}+</div>
+      <div class="hero-stat-l">جامعة</div>
     </div>
-    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
-      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">{N_CTRY}</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">دولة خليجية</div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-n">{N_CTRY}</div>
+      <div class="hero-stat-l">دولة خليجية</div>
     </div>
-    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
-      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">{N_PROGS}+</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">برنامج</div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-n">{N_PROGS}+</div>
+      <div class="hero-stat-l">برنامج</div>
     </div>
-    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
-      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">AI</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">توصيات ذكية</div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-n">AI</div>
+      <div class="hero-stat-l">توصيات ذكية</div>
     </div>
   </div>
-</div>"""
-    st.markdown(hero_html, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
     # باقي الصفحة
-    st.markdown('<div style="max-width:1160px;margin:0 auto;padding:60px 40px;">', unsafe_allow_html=True)
-    st.markdown('<div class="section-tag">ماذا يقدم بوصلة</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">منصة واحدة — كل خياراتك الأكاديمية</div>', unsafe_allow_html=True)
+    st.markdown("""
+<div style="height:64px;display:flex;align-items:center;justify-content:center;margin:0;">
+  <div style="display:flex;align-items:center;gap:12px;color:#9AACAC;font-size:12px;font-weight:500;letter-spacing:1px;text-transform:uppercase;">
+    <div style="width:40px;height:1px;background:#DEF2F1;"></div>
+    ماذا يقدم بوصلة
+    <div style="width:40px;height:1px;background:#DEF2F1;"></div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+    st.markdown('<div style="max-width:1160px;margin:0 auto;padding:0 40px 60px;">', unsafe_allow_html=True)
+    st.markdown('<div class="section-h" style="text-align:center;margin-bottom:36px;">منصة واحدة — كل خياراتك الأكاديمية</div>', unsafe_allow_html=True)
     st.markdown("""<div class="feat-grid">
-  <div class="feat-card"><div class="feat-num">01 — المستشار الذكي</div><div class="feat-title">رُشد</div><div class="feat-body">تحدّث بالعربية بشكل طبيعي — رُشد يفهم ملفك ويرشّح أفضل الجامعات من قاعدة بياناتنا مع شرح أسباب كل توصية.</div></div>
-  <div class="feat-card"><div class="feat-num">02 — الإحصاء والتحليل</div><div class="feat-title">لوحة البيانات</div><div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى إحصائية واضحة وقابلة للمقارنة.</div></div>
-  <div class="feat-card"><div class="feat-num">03 — القرار المدروس</div><div class="feat-title">المقارنة</div><div class="feat-body">قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — النوع، المنح، الترتيب، والروابط الرسمية في مكان واحد.</div></div>
+
+  <div class="feat-card">
+    <svg viewBox="0 0 80 64" style="width:64px;height:52px;margin-bottom:16px;" xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="16" width="56" height="40" rx="8" fill="#EEF8F8" stroke="#DEF2F1" stroke-width="1.5"/>
+      <rect x="16" y="24" width="40" height="5" rx="2.5" fill="#2EC4B6" opacity="0.6"/>
+      <rect x="16" y="33" width="32" height="3.5" rx="1.75" fill="#DEF2F1"/>
+      <rect x="16" y="40" width="36" height="3.5" rx="1.75" fill="#DEF2F1"/>
+      <rect x="16" y="47" width="24" height="3.5" rx="1.75" fill="#DEF2F1"/>
+      <circle cx="58" cy="18" r="14" fill="#2EC4B6" opacity="0.15"/>
+      <circle cx="58" cy="18" r="9" fill="#2EC4B6" opacity="0.25"/>
+      <text x="53" y="23" font-size="11" fill="#2B7A77" font-weight="800">AI</text>
+    </svg>
+    <div class="feat-num">01 — المستشار الذكي</div>
+    <div class="feat-title">رُشد</div>
+    <div class="feat-body">تحدّث بالعربية بشكل طبيعي — رُشد يفهم ملفك ويرشّح أفضل الجامعات من قاعدة بياناتنا مع شرح أسباب كل توصية.</div>
+  </div>
+
+  <div class="feat-card">
+    <svg viewBox="0 0 80 64" style="width:64px;height:52px;margin-bottom:16px;" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="44" width="12" height="16" rx="3" fill="#2EC4B6" opacity="0.4"/>
+      <rect x="22" y="32" width="12" height="28" rx="3" fill="#2EC4B6" opacity="0.6"/>
+      <rect x="38" y="20" width="12" height="40" rx="3" fill="#2EC4B6" opacity="0.8"/>
+      <rect x="54" y="10" width="12" height="50" rx="3" fill="#2EC4B6"/>
+      <polyline points="12,44 28,32 44,20 60,10" stroke="#17252A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="12" cy="44" r="3" fill="#17252A"/>
+      <circle cx="28" cy="32" r="3" fill="#17252A"/>
+      <circle cx="44" cy="20" r="3" fill="#17252A"/>
+      <circle cx="60" cy="10" r="3" fill="#17252A"/>
+    </svg>
+    <div class="feat-num">02 — الإحصاء والتحليل</div>
+    <div class="feat-title">لوحة البيانات</div>
+    <div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى إحصائية واضحة وقابلة للمقارنة.</div>
+  </div>
+
+  <div class="feat-card">
+    <svg viewBox="0 0 80 64" style="width:64px;height:52px;margin-bottom:16px;" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="12" width="32" height="40" rx="7" fill="#EEF8F8" stroke="#2EC4B6" stroke-width="1.5"/>
+      <rect x="44" y="12" width="32" height="40" rx="7" fill="#EEF8F8" stroke="#DEF2F1" stroke-width="1.5"/>
+      <rect x="10" y="20" width="20" height="4" rx="2" fill="#2EC4B6" opacity="0.7"/>
+      <rect x="10" y="28" width="16" height="3" rx="1.5" fill="#DEF2F1"/>
+      <rect x="10" y="35" width="18" height="3" rx="1.5" fill="#DEF2F1"/>
+      <rect x="50" y="20" width="20" height="4" rx="2" fill="#9AACAC" opacity="0.5"/>
+      <rect x="50" y="28" width="16" height="3" rx="1.5" fill="#DEF2F1"/>
+      <rect x="50" y="35" width="18" height="3" rx="1.5" fill="#DEF2F1"/>
+      <line x1="40" y1="20" x2="40" y2="52" stroke="#DEF2F1" stroke-width="1.5" stroke-dasharray="3,3"/>
+    </svg>
+    <div class="feat-num">03 — القرار المدروس</div>
+    <div class="feat-title">المقارنة</div>
+    <div class="feat-body">قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — النوع، المنح، الترتيب، والروابط الرسمية في مكان واحد.</div>
+  </div>
+
 </div>""", unsafe_allow_html=True)
 
     st.markdown('<hr class="divider">', unsafe_allow_html=True)
