@@ -18,7 +18,7 @@ html,body,[class*="css"]{font-family:'IBM Plex Sans Arabic',sans-serif!important
 [data-testid="stSidebar"],[data-testid="stSidebarNav"],button[kind="header"],[data-testid="collapsedControl"],[data-testid="stDecoration"],footer,#MainMenu{display:none!important;}
 [data-testid="stAppViewContainer"]{background:var(--white)!important;}
 [data-testid="stMain"]{background:transparent!important;}
-[data-testid="stMainBlockContainer"]{padding:0!important;max-width:100%!important;}
+[data-testid="stMainBlockContainer"]{padding:0 40px!important;max-width:1200px!important;margin:0 auto!important;}
 input,textarea,[role="textbox"]{direction:rtl!important;text-align:right!important;}
 div[data-baseweb="select"] *{direction:rtl!important;}
 label{direction:rtl!important;text-align:right!important;color:var(--muted)!important;font-size:13px!important;font-weight:500!important;}
@@ -48,15 +48,15 @@ label{direction:rtl!important;text-align:right!important;color:var(--muted)!impo
 .hero-wrap{background:#17252A!important;width:100%;margin:0;padding:0;}
 .hero-wrap [data-testid="stHorizontalBlock"]{background:#17252A!important;padding:72px 48px 64px!important;gap:48px!important;}
 .hero-wrap [data-testid="column"]{background:#17252A!important;}
-.wrap{max-width:1160px;margin:0 auto;padding:60px 40px;}
-.wrap-sm{max-width:860px;margin:0 auto;padding:60px 40px;}
+.wrap{max-width:100%;padding:56px 0;}
+.wrap-sm{max-width:760px;margin:0 auto;padding:56px 0;}
 .section-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
-.section-h{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-0.5px;margin-bottom:28px;}
+.section-h{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-0.5px;margin-bottom:28px;text-align:right;}
 .section-h-sm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-0.3px;margin-bottom:18px;}
 .divider{height:1px;background:var(--border);margin:48px 0;border:none;}
 
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px;}
-.feat-card{border:1.5px solid var(--border);border-radius:16px;padding:32px 26px;transition:all .2s;cursor:pointer;background:var(--white);position:relative;overflow:hidden;}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:56px;align-items:stretch;}
+.feat-card{border:1.5px solid var(--border);border-radius:16px;padding:32px 26px;transition:all .2s;cursor:pointer;background:var(--white);position:relative;overflow:hidden;display:flex;flex-direction:column;height:100%;min-height:260px;}
 .feat-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:var(--teal);opacity:.06;border-radius:0 16px 0 60px;transition:all .3s;}
 .feat-card:hover{border-color:var(--teal);transform:translateY(-3px);box-shadow:0 12px 32px rgba(46,196,182,.1);}
 .feat-card:hover::before{opacity:.12;width:80px;height:80px;}
@@ -180,39 +180,71 @@ st.markdown(CSS, unsafe_allow_html=True)
 if "page" not in st.session_state: st.session_state.page = "الرئيسية"
 PAGES = ["الرئيسية","بحث الجامعات","المقارنة","رُشد","البيانات","من نحن"]
 
-# ── Nav bar: HTML visual + Streamlit buttons styled as nav ──
+# ── Nav: CSS يصمم الأزرار كـ nav links حقيقية ──
 st.markdown("""<style>
-.nav{background:#FEFFFF;border-bottom:1px solid #DEF2F1;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:58px;box-shadow:0 1px 8px rgba(46,196,182,.07);}
-.nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#17252A;}
-.nav-logo span{color:#2EC4B6;}
-.nav-links{display:flex;gap:2px;}
-.nav-lnk{font-size:13px;font-weight:500;color:#6B7280;padding:6px 12px;border-radius:7px;cursor:pointer;transition:all .15s;}
-.nav-lnk:hover{background:#EEF8F8;color:#2B7A77;}
-.nav-lnk.on{background:#2EC4B6;color:#17252A;font-weight:700;}
-/* Style Streamlit nav buttons to look like nav links */
-div.nav-row button{background:transparent!important;border:none!important;color:#6B7280!important;font-size:13px!important;font-weight:500!important;font-family:'IBM Plex Sans Arabic',sans-serif!important;padding:6px 12px!important;border-radius:7px!important;height:auto!important;box-shadow:none!important;transition:all .15s!important;}
-div.nav-row button:hover{background:#EEF8F8!important;color:#2B7A77!important;}
-div.nav-row{display:flex;gap:2px;align-items:center;}
-/* sticky nav */
-[data-testid="stMainBlockContainer"]{padding-top:58px!important;}
+/* Nav container */
+section[data-testid="stMain"] > div:first-child > div:first-child > div:first-child{
+  background:#FEFFFF!important;
+  border-bottom:1px solid #DEF2F1!important;
+  position:sticky!important;top:0!important;z-index:999!important;
+  box-shadow:0 1px 8px rgba(46,196,182,.06)!important;
+}
+/* جميع أزرار الـ nav */
+div[data-testid="stHorizontalBlock"]:first-of-type{
+  padding:0 40px!important;
+  gap:0!important;
+  align-items:center!important;
+  height:58px!important;
+  background:#FEFFFF!important;
+}
+div[data-testid="stHorizontalBlock"]:first-of-type button{
+  background:transparent!important;
+  border:none!important;
+  box-shadow:none!important;
+  color:#6B7280!important;
+  font-size:13px!important;
+  font-weight:500!important;
+  font-family:'IBM Plex Sans Arabic',sans-serif!important;
+  padding:6px 10px!important;
+  border-radius:7px!important;
+  white-space:nowrap!important;
+  height:36px!important;
+  transition:all .15s!important;
+}
+div[data-testid="stHorizontalBlock"]:first-of-type button:hover{
+  background:#EEF8F8!important;color:#2B7A77!important;
+}
+div[data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child button{
+  font-family:'Syne',sans-serif!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  color:#17252A!important;
+  padding:0 20px 0 0!important;
+  background:transparent!important;
+  border:none!important;
+  box-shadow:none!important;
+  cursor:default!important;
+}
 </style>""", unsafe_allow_html=True)
 
-# الـ nav bar: لوغو + أزرار Streamlit مصممة كـ nav
-logo_col, nav_area = st.columns([1, 4])
-with logo_col:
-    st.markdown("<div style=\"font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#17252A;padding:12px 0 12px 16px;\">بو<span style=\"color:#2EC4B6;\">صلة</span></div>", unsafe_allow_html=True)
-with nav_area:
-    st.markdown('<div class="nav-row" style="display:flex;gap:2px;justify-content:flex-end;padding:8px 0;">', unsafe_allow_html=True)
-    nc = st.columns(len(PAGES))
-    for i, name in enumerate(PAGES):
-        is_active = st.session_state.page == name
-        btn_style = "background:#2EC4B6!important;color:#17252A!important;font-weight:700!important;" if is_active else ""
-        if nc[i].button(name, key=f"nav_{name}", use_container_width=True):
+# لوغو + أزرار nav في row واحد
+all_cols = st.columns([1.2] + [0.8]*len(PAGES))
+with all_cols[0]:
+    st.markdown('<p style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#17252A;margin:0;padding:10px 0;">بو<span style="color:#2EC4B6;">صلة</span></p>', unsafe_allow_html=True)
+for i, name in enumerate(PAGES):
+    with all_cols[i+1]:
+        if st.button(name, key=f"nav_{name}", use_container_width=True):
             st.session_state.page = name; st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
-# خط فاصل تحت الـ nav
-st.markdown('<hr style="margin:0;border:none;border-top:1px solid #DEF2F1;">', unsafe_allow_html=True)
+# Active button highlight
+active_idx = PAGES.index(st.session_state.page)
+st.markdown(f"""<style>
+div[data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child({active_idx+2}) button{{
+  background:#EEF8F8!important;color:#2B7A77!important;font-weight:700!important;
+}}
+</style>""", unsafe_allow_html=True)
+
+st.markdown('<div style="height:1px;background:#DEF2F1;margin:0 -40px;"></div>', unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════
