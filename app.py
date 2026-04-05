@@ -118,6 +118,8 @@ div[data-testid="stExpander"] details>div{color:var(--muted)!important;line-heig
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(46,196,182,.3);border-radius:4px;}
 /* Hero full-bleed fix */
+[data-testid="stMainBlockContainer"]{padding-left:0!important;padding-right:0!important;max-width:100%!important;}
+[data-testid="block-container"]{padding:0!important;max-width:100%!important;}
 .baw-hero{margin-left:calc(-50vw + 50%) !important;margin-right:calc(-50vw + 50%) !important;width:100vw !important;padding-left:calc(48px + (50vw - 50%)) !important;padding-right:calc(48px + (50vw - 50%)) !important;}
 [data-testid="stMainBlockContainer"]{padding-left:0!important;padding-right:0!important;max-width:100%!important;}
 [data-testid="block-container"]{padding:0!important;max-width:100%!important;}
@@ -197,62 +199,63 @@ div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{position:absolute!imp
 # الرئيسية
 # ══════════════════════════════════════════════
 if st.session_state.page == "الرئيسية":
-    # CSS بدون f-string
-    st.markdown("""<style>
-.baw-hero{background:#17252A;padding:72px 48px 64px;display:flex;justify-content:space-between;align-items:center;gap:48px;direction:rtl;}
-.baw-hero-left{flex:1.1;}
-.baw-hero-pill{display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2EC4B6;margin-bottom:24px;}
-.baw-hero-dot{width:6px;height:6px;border-radius:50%;background:#2EC4B6;display:inline-block;animation:pulse 2s infinite;}
-.baw-hero-h1{font-family:'Syne',sans-serif;font-size:60px;font-weight:800;color:#FEFFFF;line-height:1.0;letter-spacing:-2px;margin-bottom:16px;}
-.baw-hero-h1 em{color:#2EC4B6;font-style:normal;}
-.baw-hero-sub{font-size:15px;color:rgba(255,255,255,.5);line-height:1.85;max-width:440px;}
-.baw-hero-right{flex:0.9;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.baw-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px 16px;text-align:center;}
-.baw-stat-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:5px;}
-.baw-stat-l{font-size:12px;color:rgba(255,255,255,.4);font-weight:500;}
-</style>""", unsafe_allow_html=True)
 
-    # HTML بـ f-string للـ variables فقط
-    st.markdown(f"""<div class="baw-hero">
-  <div class="baw-hero-left">
-    <div class="baw-hero-pill"><span class="baw-hero-dot"></span>مدعوم بالذكاء الاصطناعي</div>
-    <div class="baw-hero-h1">بو<em>صلة</em></div>
-    <div class="baw-hero-sub">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
+    # Hero كله HTML واحد — لا Streamlit elements بداخله
+    hero_html = f"""
+<div style="background:#17252A;padding:72px 48px 64px;display:flex;align-items:center;gap:48px;direction:rtl;width:100%;">
+  <div style="flex:1.15;">
+    <div style="display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2EC4B6;margin-bottom:24px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:#2EC4B6;display:inline-block;"></span>مدعوم بالذكاء الاصطناعي
+    </div>
+    <div style="font-family:'Syne',sans-serif;font-size:62px;font-weight:800;color:#FEFFFF;line-height:1.0;letter-spacing:-2px;margin-bottom:18px;">بو<span style="color:#2EC4B6;">صلة</span></div>
+    <div style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.85;max-width:420px;">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
   </div>
-  <div class="baw-hero-right">
-    <div class="baw-stat"><div class="baw-stat-n">{N_UNIS}+</div><div class="baw-stat-l">جامعة</div></div>
-    <div class="baw-stat"><div class="baw-stat-n">{N_CTRY}</div><div class="baw-stat-l">دولة خليجية</div></div>
-    <div class="baw-stat"><div class="baw-stat-n">{N_PROGS}+</div><div class="baw-stat-l">برنامج</div></div>
-    <div class="baw-stat"><div class="baw-stat-n">AI</div><div class="baw-stat-l">توصيات ذكية</div></div>
+  <div style="flex:0.85;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
+      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">{N_UNIS}+</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">جامعة</div>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
+      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">{N_CTRY}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">دولة خليجية</div>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
+      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">{N_PROGS}+</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">برنامج</div>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:24px 16px;text-align:center;">
+      <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#2EC4B6;line-height:1;margin-bottom:6px;">AI</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:500;">توصيات ذكية</div>
+    </div>
   </div>
-</div>""", unsafe_allow_html=True)
+</div>"""
+    st.markdown(hero_html, unsafe_allow_html=True)
 
-    st.markdown('<div class="wrap">', unsafe_allow_html=True)
-    _, col, _ = st.columns([0.3, 5, 0.3])
-    with col:
-        st.markdown('<div class="section-tag">ماذا يقدم بوصلة</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-h">منصة واحدة — كل خياراتك الأكاديمية</div>', unsafe_allow_html=True)
-        st.markdown("""<div class="feat-grid">
-  <div class="feat-card"><div class="feat-num">03 — القرار المدروس</div><div class="feat-title">المقارنة</div><div class="feat-body">قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — النوع، المنح، الترتيب، والروابط الرسمية في مكان واحد.</div></div>
-  <div class="feat-card"><div class="feat-num">02 — الإحصاء والتحليل</div><div class="feat-title">لوحة البيانات</div><div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى إحصائية واضحة وقابلة للمقارنة.</div></div>
+    # باقي الصفحة
+    st.markdown('<div style="max-width:1160px;margin:0 auto;padding:60px 40px;">', unsafe_allow_html=True)
+    st.markdown('<div class="section-tag">ماذا يقدم بوصلة</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-h">منصة واحدة — كل خياراتك الأكاديمية</div>', unsafe_allow_html=True)
+    st.markdown("""<div class="feat-grid">
   <div class="feat-card"><div class="feat-num">01 — المستشار الذكي</div><div class="feat-title">رُشد</div><div class="feat-body">تحدّث بالعربية بشكل طبيعي — رُشد يفهم ملفك ويرشّح أفضل الجامعات من قاعدة بياناتنا مع شرح أسباب كل توصية.</div></div>
+  <div class="feat-card"><div class="feat-num">02 — الإحصاء والتحليل</div><div class="feat-title">لوحة البيانات</div><div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى إحصائية واضحة وقابلة للمقارنة.</div></div>
+  <div class="feat-card"><div class="feat-num">03 — القرار المدروس</div><div class="feat-title">المقارنة</div><div class="feat-body">قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — النوع، المنح، الترتيب، والروابط الرسمية في مكان واحد.</div></div>
 </div>""", unsafe_allow_html=True)
 
-        st.markdown('<hr class="divider">', unsafe_allow_html=True)
-        st.markdown('<div class="section-tag">رؤيتنا ورسالتنا</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-h">نحو قرار تعليمي أفضل</div>', unsafe_allow_html=True)
-        with st.expander("رؤيتنا", expanded=True):
-            st.markdown("نسعى في بوصلة إلى إعادة تعريف تجربة اختيار التعليم في الخليج، عبر منصة ذكية توجّه الشباب نحو تخصصاتهم وجامعاتهم المناسبة، وتحوّل القرار التعليمي من حيرة فردية إلى مسار واضح مدروس.")
-        with st.expander("رسالتنا"):
-            st.markdown("تلتزم بوصلة بتمكين الطلبة وأولياء الأمور من اتخاذ قرارات تعليمية دقيقة من خلال منصة ذكية تعتمد على الذكاء الاصطناعي والبيانات الموثوقة.")
-        with st.expander("قيمنا"):
-            st.markdown("الوضوح · العدالة · التمكين · الابتكار · الموثوقية")
+    st.markdown('<hr class="divider">', unsafe_allow_html=True)
+    st.markdown('<div class="section-tag">رؤيتنا ورسالتنا</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-h">نحو قرار تعليمي أفضل</div>', unsafe_allow_html=True)
+    with st.expander("رؤيتنا", expanded=True):
+        st.markdown("نسعى في بوصلة إلى إعادة تعريف تجربة اختيار التعليم في الخليج، عبر منصة ذكية توجّه الشباب نحو تخصصاتهم وجامعاتهم المناسبة، وتحوّل القرار التعليمي من حيرة فردية إلى مسار واضح مدروس.")
+    with st.expander("رسالتنا"):
+        st.markdown("تلتزم بوصلة بتمكين الطلبة وأولياء الأمور من اتخاذ قرارات تعليمية دقيقة من خلال منصة ذكية تعتمد على الذكاء الاصطناعي والبيانات الموثوقة.")
+    with st.expander("قيمنا"):
+        st.markdown("الوضوح · العدالة · التمكين · الابتكار · الموثوقية")
 
-        st.markdown('<hr class="divider">', unsafe_allow_html=True)
-        b1, b2, b3 = st.columns(3)
-        if b1.button("المستشار رُشد",  use_container_width=True): st.session_state.page="رُشد"; st.rerun()
-        if b2.button("تحليل البيانات", use_container_width=True): st.session_state.page="البيانات"; st.rerun()
-        if b3.button("بحث الجامعات",  use_container_width=True): st.session_state.page="بحث الجامعات"; st.rerun()
+    st.markdown('<hr class="divider">', unsafe_allow_html=True)
+    b1, b2, b3 = st.columns(3)
+    if b1.button("المستشار رُشد",  use_container_width=True): st.session_state.page="رُشد"; st.rerun()
+    if b2.button("تحليل البيانات", use_container_width=True): st.session_state.page="البيانات"; st.rerun()
+    if b3.button("بحث الجامعات",  use_container_width=True): st.session_state.page="بحث الجامعات"; st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
 
