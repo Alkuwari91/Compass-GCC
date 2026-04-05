@@ -31,7 +31,8 @@ label{direction:rtl!important;text-align:right!important;color:var(--muted)!impo
 .nav-btn:hover{background:rgba(255,255,255,.07);color:var(--white);}
 .nav-btn.on{background:var(--teal);color:var(--dark);font-weight:700;}
 
-.hero{background:var(--dark);padding:80px 48px 72px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.hero{background:var(--dark);padding:80px 48px 72px;display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center;direction:ltr;}
+.hero-left{direction:rtl;}
 .hero-pill{display:inline-flex;align-items:center;gap:7px;border:1.5px solid rgba(46,196,182,.35);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:28px;}
 .hero-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -190,16 +191,16 @@ div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{position:absolute!imp
 # ══════════════════════════════════════════════
 if st.session_state.page == "الرئيسية":
     st.markdown(f"""<div class="hero">
-  <div class="hero-left">
-    <div class="hero-pill"><span class="hero-pill-dot"></span>مدعوم بالذكاء الاصطناعي</div>
-    <div class="hero-h1">بو<em>صلة</em></div>
-    <div class="hero-sub">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
-  </div>
   <div class="hero-right">
     <div class="hero-stat"><div class="hero-stat-n">{N_UNIS}+</div><div class="hero-stat-l">جامعة</div></div>
     <div class="hero-stat"><div class="hero-stat-n">{N_CTRY}</div><div class="hero-stat-l">دولة خليجية</div></div>
     <div class="hero-stat"><div class="hero-stat-n">{N_PROGS}+</div><div class="hero-stat-l">برنامج أكاديمي</div></div>
     <div class="hero-stat"><div class="hero-stat-n">AI</div><div class="hero-stat-l">توصيات ذكية</div></div>
+  </div>
+  <div class="hero-left">
+    <div class="hero-pill"><span class="hero-pill-dot"></span>مدعوم بالذكاء الاصطناعي</div>
+    <div class="hero-h1">بو<em>صلة</em></div>
+    <div class="hero-sub">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي — ابحث، قارن، واتخذ قرارك بثقة.</div>
   </div>
 </div>""", unsafe_allow_html=True)
 
@@ -209,9 +210,9 @@ if st.session_state.page == "الرئيسية":
         st.markdown('<div class="section-tag">ماذا يقدم بوصلة</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-h">منصة واحدة — كل خياراتك الأكاديمية</div>', unsafe_allow_html=True)
         st.markdown("""<div class="feat-grid">
-  <div class="feat-card"><div class="feat-num">01 — المستشار الذكي</div><div class="feat-title">رُشد</div><div class="feat-body">تحدّث بالعربية بشكل طبيعي — رُشد يفهم ملفك ويرشّح أفضل الجامعات من قاعدة بياناتنا مع شرح أسباب كل توصية.</div></div>
-  <div class="feat-card"><div class="feat-num">02 — الإحصاء والتحليل</div><div class="feat-title">لوحة البيانات</div><div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى إحصائية واضحة وقابلة للمقارنة.</div></div>
   <div class="feat-card"><div class="feat-num">03 — القرار المدروس</div><div class="feat-title">المقارنة</div><div class="feat-body">قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — النوع، المنح، الترتيب، والروابط الرسمية في مكان واحد.</div></div>
+  <div class="feat-card"><div class="feat-num">02 — الإحصاء والتحليل</div><div class="feat-title">لوحة البيانات</div><div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى إحصائية واضحة وقابلة للمقارنة.</div></div>
+  <div class="feat-card"><div class="feat-num">01 — المستشار الذكي</div><div class="feat-title">رُشد</div><div class="feat-body">تحدّث بالعربية بشكل طبيعي — رُشد يفهم ملفك ويرشّح أفضل الجامعات من قاعدة بياناتنا مع شرح أسباب كل توصية.</div></div>
 </div>""", unsafe_allow_html=True)
 
         st.markdown('<hr class="divider">', unsafe_allow_html=True)
