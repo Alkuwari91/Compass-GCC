@@ -34,14 +34,7 @@ input,textarea,[role="textbox"]{direction:rtl!important;text-align:right!importa
 div[data-baseweb="select"] *{direction:rtl!important;}
 label{direction:rtl!important;text-align:right!important;color:var(--muted)!important;font-size:13px!important;font-weight:500!important;}
 
-/* ── Nav ── */
-.baw-nav{background:var(--dark);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:58px;border-radius:18px 18px 0 0;}
-.baw-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;white-space:nowrap;}
-.baw-logo span{color:var(--teal);}
-.baw-links{display:flex;gap:4px;}
-.baw-link{font-size:13px;font-weight:600;color:#6B7280;padding:6px 13px;border-radius:8px;border:none;background:none;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'IBM Plex Sans Arabic',sans-serif;}
-.baw-link:hover{background:rgba(255,255,255,.08);color:#fff;}
-.baw-link.on{background:var(--teal);color:var(--dark);font-weight:700;}
+/* ── Nav (styled via dynamic CSS below) ── */
 
 /* ── Page inner padding ── */
 .page-body{padding:40px 48px 56px;direction:rtl;}
@@ -199,35 +192,62 @@ st.markdown(CSS, unsafe_allow_html=True)
 if "page" not in st.session_state: st.session_state.page = "الرئيسية"
 PAGES = ["الرئيسية","بحث الجامعات","المقارنة","رُشد","البيانات","من نحن"]
 
-# ── Nav ──
-nav_links_html = ""
-for p in PAGES:
-    active_cls = "on" if st.session_state.page == p else ""
-    nav_links_html += f'<button class="baw-link {active_cls}" onclick="">{p}</button>'
+# ── Nav: logo col + one col per page ──
+active_idx = PAGES.index(st.session_state.page)
 
-st.markdown(f"""
-<div class="baw-nav">
-  <div class="baw-logo">بو<span>صلة</span></div>
-  <div class="baw-links" id="nav-links">{nav_links_html}</div>
-</div>
-""", unsafe_allow_html=True)
-
-# Invisible Streamlit nav buttons
-nav_cols = st.columns(len(PAGES))
+nav_cols = st.columns([1.4] + [1]*len(PAGES))
+with nav_cols[0]:
+    st.markdown('<div class="baw-logo-cell">بو<span>صلة</span></div>', unsafe_allow_html=True)
 for i, name in enumerate(PAGES):
-    with nav_cols[i]:
+    with nav_cols[i+1]:
         if st.button(name, key=f"nav_{name}", use_container_width=True):
             st.session_state.page = name; st.rerun()
 
-# Style the nav buttons to be invisible (nav HTML above is decorative)
-active_idx = PAGES.index(st.session_state.page)
+# CSS: style the real Streamlit nav row as a dark navbar
 st.markdown(f"""<style>
-/* Hide all nav streamlit buttons visually — nav is handled by HTML above */
-div[data-testid="stHorizontalBlock"]:nth-of-type(1) button{{
-  opacity:0!important;height:2px!important;padding:0!important;min-height:0!important;border:none!important;background:none!important;margin:0!important;
+/* ── Nav row wrapper ── */
+div[data-testid="stMainBlockContainer"] > div > div > div:first-child
+  div[data-testid="stHorizontalBlock"]:first-of-type {{
+  background:#17252A!important;
+  padding:0 24px!important;
+  gap:2px!important;
+  align-items:center!important;
+  min-height:58px!important;
+  border-radius:18px 18px 0 0!important;
+  margin:0!important;
 }}
-div[data-testid="stHorizontalBlock"]:nth-of-type(1){{
-  height:2px!important;overflow:hidden!important;margin:0!important;padding:0!important;gap:0!important;
+/* Logo cell */
+div[data-testid="stMainBlockContainer"] > div > div > div:first-child
+  div[data-testid="stHorizontalBlock"]:first-of-type
+  [data-testid="column"]:first-child {{
+  display:flex!important; align-items:center!important;
+}}
+.baw-logo-cell{{
+  font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  color:#FEFFFF;letter-spacing:-0.5px;white-space:nowrap;padding:0 8px;
+}}
+.baw-logo-cell span{{color:#2EC4B6;}}
+/* All nav buttons */
+div[data-testid="stMainBlockContainer"] > div > div > div:first-child
+  div[data-testid="stHorizontalBlock"]:first-of-type button {{
+  background:transparent!important;
+  border:none!important;box-shadow:none!important;
+  color:#9AACAC!important;
+  font-size:13px!important;font-weight:500!important;
+  font-family:'IBM Plex Sans Arabic',sans-serif!important;
+  padding:8px 10px!important;border-radius:8px!important;
+  white-space:nowrap!important;height:38px!important;
+  transition:all .15s!important;
+}}
+div[data-testid="stMainBlockContainer"] > div > div > div:first-child
+  div[data-testid="stHorizontalBlock"]:first-of-type button:hover {{
+  background:rgba(255,255,255,.08)!important;color:#FEFFFF!important;
+}}
+/* Active tab */
+div[data-testid="stMainBlockContainer"] > div > div > div:first-child
+  div[data-testid="stHorizontalBlock"]:first-of-type
+  [data-testid="column"]:nth-child({active_idx+2}) button {{
+  background:#2EC4B6!important;color:#17252A!important;font-weight:700!important;
 }}
 </style>""", unsafe_allow_html=True)
 
