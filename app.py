@@ -28,14 +28,13 @@ button[kind="header"],[data-testid="collapsedControl"],
 [data-testid="stApp"],[data-testid="stAppViewContainer"]{background:#E8EDED!important;}
 [data-testid="stMain"]{background:#E8EDED!important;padding:20px!important;}
 
-/* White centered card */
+/* White centered card — NO overflow:hidden so scroll works */
 [data-testid="stMainBlockContainer"]{
   max-width:1100px!important;width:100%!important;
   margin:0 auto!important;padding:0!important;
   background:#FEFFFF!important;
   border:1.5px solid #C8E6E4!important;
   border-radius:18px!important;
-  overflow:hidden!important;
   box-shadow:0 2px 20px rgba(46,196,182,.09)!important;
 }
 [data-testid="block-container"]{padding:0!important;max-width:100%!important;}
@@ -126,64 +125,49 @@ N_SCH   = int(unis_raw["scholarship"].apply(uni_has_sch).sum()) if not unis_raw.
 # ── Session state ──
 if "page" not in st.session_state: st.session_state.page = "الرئيسية"
 PAGES = ["الرئيسية","بحث الجامعات","المقارنة","رُشد","البيانات","من نحن"]
+active_idx = PAGES.index(st.session_state.page)
 
-# ══════════════════════════════════════════════
-# NAV BAR  —  rendered as HTML, wired to st.buttons hidden in zero-height container
-# ══════════════════════════════════════════════
-def nav_item(label, page_key):
-    active = "nav-active" if st.session_state.page == page_key else ""
-    return f'<button class="nav-btn {active}" onclick="navClick(this)" data-page="{page_key}">{label}</button>'
-
-nav_html = "".join([nav_item(p, p) for p in PAGES])
-
-st.markdown(f"""
-<style>
-.baw-navbar{{
-  background:#17252A;display:flex;align-items:center;justify-content:space-between;
-  padding:0 32px;height:60px;direction:rtl;
-}}
-.baw-logo{{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#FEFFFF;white-space:nowrap;}}
-.baw-logo em{{color:#2EC4B6;font-style:normal;}}
-.nav-links{{display:flex;gap:2px;align-items:center;flex-wrap:nowrap;}}
-.nav-btn{{
-  font-family:'IBM Plex Sans Arabic',sans-serif;font-size:13px;font-weight:500;
-  color:rgba(255,255,255,.5);background:none;border:none;
-  padding:7px 13px;border-radius:8px;cursor:pointer;
-  white-space:nowrap;transition:all .15s;
-}}
-.nav-btn:hover{{background:rgba(255,255,255,.09);color:#fff;}}
-.nav-btn.nav-active{{background:#2EC4B6;color:#17252A;font-weight:700;}}
-</style>
-<div class="baw-navbar">
-  <div class="baw-logo">بو<em>صلة</em></div>
-  <div class="nav-links">{nav_html}</div>
-</div>
-<script>
-function navClick(btn){{
-  var page = btn.getAttribute('data-page');
-  // Find and click the matching hidden Streamlit button
-  var allBtns = window.parent.document.querySelectorAll('button[kind="secondary"]');
-  allBtns.forEach(function(b){{ if(b.innerText.trim() === page) b.click(); }});
-}}
-</script>
-""", unsafe_allow_html=True)
-
-# Hidden functional nav buttons (zero-height)
-st.markdown("""<style>
-div[data-testid="stMainBlockContainer"] > div > div > div:first-child
-  > div[data-testid="stVerticalBlock"] > div:nth-child(2) {{
-  height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;
-}}
-</style>""", unsafe_allow_html=True)
-
-_nav_cols = st.columns(len(PAGES))
+# ── Nav: logo col + nav button cols ──
+_nc = st.columns([1.6, 1, 1, 1, 1, 1, 1])
+with _nc[0]:
+    st.markdown('<p style="font-family:Syne,sans-serif;font-size:20px;font-weight:800;color:#FEFFFF;margin:0;line-height:60px;white-space:nowrap;padding-right:4px;">بو<span style="color:#2EC4B6;">صلة</span></p>', unsafe_allow_html=True)
 for _i, _name in enumerate(PAGES):
-    with _nav_cols[_i]:
+    with _nc[_i + 1]:
         if st.button(_name, key=f"nav_{_name}", use_container_width=True):
             st.session_state.page = _name; st.rerun()
 
-# Separator
-st.markdown('<div style="height:1px;background:#DEF2F1;"></div>', unsafe_allow_html=True)
+# Style the nav row (first stHorizontalBlock in the page)
+st.markdown(f"""<style>
+[data-testid="stHorizontalBlock"]:first-of-type{{
+  background:#17252A!important;
+  padding:8px 24px!important;
+  gap:2px!important;
+  align-items:center!important;
+  min-height:60px!important;
+  border-radius:16px 16px 0 0!important;
+  flex-wrap:nowrap!important;
+}}
+[data-testid="stHorizontalBlock"]:first-of-type button{{
+  background:transparent!important;border:none!important;box-shadow:none!important;
+  color:rgba(255,255,255,.5)!important;font-size:13px!important;font-weight:500!important;
+  font-family:'IBM Plex Sans Arabic',sans-serif!important;
+  padding:7px 8px!important;border-radius:8px!important;
+  white-space:nowrap!important;height:36px!important;min-height:36px!important;
+  transition:all .15s!important;width:100%!important;
+}}
+[data-testid="stHorizontalBlock"]:first-of-type button:hover{{
+  background:rgba(255,255,255,.1)!important;color:#fff!important;
+}}
+[data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:nth-child({active_idx+2}) button{{
+  background:#2EC4B6!important;color:#17252A!important;font-weight:700!important;
+}}
+[data-testid="stHorizontalBlock"]:first-of-type [data-testid="column"]:first-child p{{
+  font-family:'Syne',sans-serif!important;font-size:20px!important;font-weight:800!important;
+  color:#FEFFFF!important;
+}}
+</style>""", unsafe_allow_html=True)
+
+st.markdown('<div style="height:1px;background:#DEF2F1;margin:0;"></div>', unsafe_allow_html=True)
 
 # ── Helpers ──
 P = st.session_state.page
