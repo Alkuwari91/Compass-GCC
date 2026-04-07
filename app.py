@@ -10,131 +10,67 @@ from ai_engine import build_unis_context, chat_rushd, generate_dashboard_report,
 
 st.set_page_config(page_title="بوصلة", layout="wide", initial_sidebar_state="collapsed")
 
-CSS = """<style>
+# ─── Base CSS ───
+st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
-:root{--teal:#2EC4B6;--dark:#17252A;--mid:#2B7A77;--light:#DEF2F1;--white:#FEFFFF;--ink:#17252A;--muted:#3B7A77;--pale:#EEF8F8;--border:rgba(23,37,42,.10);--r:12px;}
+
+:root{--teal:#2EC4B6;--dark:#17252A;--mid:#2B7A77;--pale:#EEF8F8;--border:rgba(23,37,42,.10);--muted:#3B7A77;--white:#FEFFFF;--r:12px;}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body,[class*="css"]{font-family:'IBM Plex Sans Arabic',sans-serif!important;background:#F4F6F7!important;color:var(--ink)!important;direction:rtl!important;}
-[data-testid="stSidebar"],[data-testid="stSidebarNav"],button[kind="header"],[data-testid="collapsedControl"],[data-testid="stDecoration"],footer,#MainMenu{display:none!important;}
-[data-testid="stAppViewContainer"]{background:#F4F6F7!important;}
-[data-testid="stMain"]{background:transparent!important;display:flex;justify-content:center;}
+html,body,[class*="css"]{font-family:'IBM Plex Sans Arabic',sans-serif!important;direction:rtl!important;color:#17252A!important;}
+
+/* Hide chrome */
+[data-testid="stSidebar"],[data-testid="stSidebarNav"],
+button[kind="header"],[data-testid="collapsedControl"],
+[data-testid="stDecoration"],footer,#MainMenu{display:none!important;}
+
+/* Grey outer bg */
+[data-testid="stApp"],[data-testid="stAppViewContainer"]{background:#E8EDED!important;}
+[data-testid="stMain"]{background:#E8EDED!important;padding:20px!important;}
+
+/* White centered card */
 [data-testid="stMainBlockContainer"]{
-  padding:0!important;
-  max-width:1160px!important;
-  width:100%!important;
-  margin:24px auto!important;
+  max-width:1100px!important;width:100%!important;
+  margin:0 auto!important;padding:0!important;
   background:#FEFFFF!important;
-  border:1.5px solid #DEF2F1!important;
-  border-radius:20px!important;
-  box-shadow:0 4px 32px rgba(46,196,182,.07)!important;
+  border:1.5px solid #C8E6E4!important;
+  border-radius:18px!important;
   overflow:hidden!important;
+  box-shadow:0 2px 20px rgba(46,196,182,.09)!important;
 }
 [data-testid="block-container"]{padding:0!important;max-width:100%!important;}
+
+/* Force RTL + font everywhere */
+p,span,div,h1,h2,h3,label,button{font-family:'IBM Plex Sans Arabic',sans-serif!important;}
 input,textarea,[role="textbox"]{direction:rtl!important;text-align:right!important;}
 div[data-baseweb="select"] *{direction:rtl!important;}
-label{direction:rtl!important;text-align:right!important;color:var(--muted)!important;font-size:13px!important;font-weight:500!important;}
+label{color:var(--muted)!important;font-size:13px!important;font-weight:500!important;}
 
-/* ── Nav (styled via dynamic CSS below) ── */
-
-/* ── Page inner padding ── */
-.page-body{padding:40px 48px 56px;direction:rtl;}
-
-/* ── Hero ── */
-.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(46,196,182,.1);border:1px solid rgba(46,196,182,.25);border-radius:100px;padding:5px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2B7A77;}
-.hero-tag-dot{width:5px;height:5px;border-radius:50%;background:#2EC4B6;display:inline-block;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.hero-big{font-family:'Syne',sans-serif;font-size:80px;font-weight:800;color:#17252A;line-height:0.95;letter-spacing:-4px;margin:24px 0 0;text-align:center;}
-.hero-big em{color:#2EC4B6;font-style:normal;}
-.hero-rule{width:56px;height:3px;background:#2EC4B6;border-radius:2px;margin:24px auto;}
-.hero-sub{font-size:16px;color:#3B7A77;line-height:1.8;max-width:540px;margin:0 auto 32px;text-align:center;}
-.hero-stats{display:flex;justify-content:center;align-items:center;gap:0;border:1px solid #DEF2F1;border-radius:16px;overflow:hidden;max-width:480px;margin:0 auto 48px;}
-.hero-stat-item{flex:1;padding:16px;text-align:center;border-left:1px solid #DEF2F1;}
-.hero-stat-item:last-child{border-left:none;}
-.hero-stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#17252A;line-height:1;}
-.hero-stat-l{font-size:11px;color:#9AACAC;font-weight:500;margin-top:3px;}
-
-/* ── Feature cards ── */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:0;}
-.feat-card{border:1.5px solid var(--border);border-radius:16px;padding:28px 22px;background:var(--white);position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:220px;cursor:pointer;transition:all .2s;}
-.feat-card::before{content:'';position:absolute;top:0;right:0;width:56px;height:56px;background:var(--teal);opacity:.06;border-radius:0 16px 0 56px;transition:all .3s;}
-.feat-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 10px 28px rgba(46,196,182,.1);}
-.feat-card:hover::before{opacity:.12;width:72px;height:72px;}
-.feat-num{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--teal);margin-bottom:16px;}
-.feat-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--ink);margin-bottom:8px;}
-.feat-body{font-size:13px;color:var(--muted);line-height:1.75;flex:1;}
-.feat-arrow{margin-top:16px;font-size:12px;font-weight:700;color:var(--teal);}
-
-/* ── Values compact ── */
-.vision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;}
-.vision-card{background:var(--pale);border:1.5px solid rgba(46,196,182,.15);border-radius:14px;padding:20px 18px;}
-.vision-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:8px;}
-.vision-body{font-size:13px;color:var(--muted);line-height:1.7;}
-.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.val-card{background:var(--pale);border-radius:var(--r);padding:18px 14px;text-align:center;border:1.5px solid rgba(46,196,182,.15);}
-.val-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:5px;}
-.val-body{font-size:12px;color:var(--muted);}
-
-/* ── Uni cards ── */
-.uni-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--r);padding:18px 22px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:20px;transition:all .18s;}
-.uni-card:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(46,196,182,.08);}
-.uni-name{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;}
-.uni-sub{font-size:12px;color:#9AACAC;}
-.uni-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.uni-link{font-size:12px;font-weight:600;color:var(--teal);text-decoration:none;padding:5px 12px;border:1.5px solid rgba(46,196,182,.3);border-radius:7px;background:rgba(46,196,182,.05);transition:all .15s;white-space:nowrap;}
-.uni-link:hover{background:var(--teal);color:var(--dark);border-color:var(--teal);}
-
-/* ── Tags ── */
-.tags{display:flex;flex-wrap:wrap;gap:5px;}
-.tag{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;}
-.tag-gov{background:rgba(46,196,182,.1);color:var(--mid);border:1px solid rgba(46,196,182,.25);}
-.tag-priv{background:rgba(23,37,42,.06);color:var(--ink);border:1px solid var(--border);}
-.tag-sch{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;}
-.tag-lang{background:#F0F9FF;color:#0369A1;border:1px solid #BAE6FD;}
-
-.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(46,196,182,.08);border:1.5px solid rgba(46,196,182,.25);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--mid);margin-bottom:20px;}
-
-/* ── Compare ── */
-.comp-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:22px;}
-.comp-head{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--ink);margin-bottom:16px;padding-bottom:12px;border-bottom:1.5px solid var(--border);}
-.comp-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(23,37,42,.04);}
-.comp-label{font-size:12px;color:#9AACAC;font-weight:500;}
-.comp-val{font-size:13px;color:var(--ink);font-weight:600;}
-
-/* ── AI boxes ── */
-.ai-box{background:var(--pale);border:1.5px solid rgba(46,196,182,.2);border-radius:14px;padding:24px 28px;margin-top:16px;line-height:2;color:var(--ink);}
-.ai-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;display:block;}
-.gap-box{background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:24px 28px;margin-top:16px;line-height:2;color:var(--ink);}
-
-/* ── Section headings ── */
-.section-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
-.section-h{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-0.5px;margin-bottom:24px;text-align:right;}
-.section-h-sm{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-0.3px;margin-bottom:14px;}
-.divider{height:1px;background:var(--border);margin:40px 0;border:none;}
-
-/* ── Back button ── */
-.stButton>button[data-testid="back_btn"]{background:var(--pale)!important;border-color:rgba(46,196,182,.3)!important;color:var(--mid)!important;}
-
-/* ── Streamlit input overrides ── */
-.stTextInput>div>div{background:var(--white)!important;border:1.5px solid var(--border)!important;border-radius:10px!important;}
+/* ── Inputs ── */
+.stTextInput>div>div{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:10px!important;}
 .stTextInput>div>div:focus-within{border-color:var(--teal)!important;box-shadow:0 0 0 3px rgba(46,196,182,.12)!important;}
-.stTextInput>div>div>input{color:var(--ink)!important;background:transparent!important;font-family:'IBM Plex Sans Arabic',sans-serif!important;}
-input::placeholder{color:#9AACAC!important;opacity:1!important;}
-textarea::placeholder{color:#9AACAC!important;opacity:1!important;}
-.stTextArea>div>div{background:var(--white)!important;border:1.5px solid var(--border)!important;border-radius:10px!important;}
-.stTextArea>div>div>textarea{color:var(--ink)!important;background:transparent!important;}
-div[data-baseweb="select"]>div{background:var(--white)!important;border:1.5px solid var(--border)!important;border-radius:10px!important;color:var(--ink)!important;}
-div[data-baseweb="select"] *{color:var(--ink)!important;}
-div[data-baseweb="popover"] li{background:var(--white)!important;color:var(--ink)!important;}
+.stTextInput>div>div>input{color:#17252A!important;background:transparent!important;}
+input::placeholder,textarea::placeholder{color:#9AACAC!important;opacity:1!important;}
+.stTextArea>div>div{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:10px!important;}
+div[data-baseweb="select"]>div{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:10px!important;}
+div[data-baseweb="select"] *{color:#17252A!important;}
+div[data-baseweb="popover"] li{background:#fff!important;color:#17252A!important;}
 div[data-baseweb="popover"] li:hover{background:var(--pale)!important;color:var(--teal)!important;}
-.stButton>button{background:var(--white)!important;border:1.5px solid var(--border)!important;color:var(--ink)!important;border-radius:10px!important;font-weight:600!important;font-family:'IBM Plex Sans Arabic',sans-serif!important;font-size:13px!important;padding:10px 18px!important;transition:all .18s!important;}
+
+/* ── Buttons ── */
+.stButton>button{
+  background:#fff!important;border:1.5px solid var(--border)!important;
+  color:#17252A!important;border-radius:10px!important;font-weight:600!important;
+  font-family:'IBM Plex Sans Arabic',sans-serif!important;font-size:13px!important;
+  padding:10px 18px!important;transition:all .18s!important;
+}
 .stButton>button:hover{background:var(--pale)!important;border-color:var(--teal)!important;color:var(--teal)!important;}
 .stLinkButton a{background:rgba(46,196,182,.07)!important;border:1.5px solid rgba(46,196,182,.25)!important;color:var(--mid)!important;border-radius:9px!important;font-weight:600!important;font-size:12px!important;}
-.stLinkButton a:hover{background:var(--teal)!important;color:var(--dark)!important;border-color:var(--teal)!important;}
-div[data-testid="stExpander"]{background:var(--white)!important;border:1.5px solid var(--border)!important;border-radius:var(--r)!important;overflow:hidden!important;margin-bottom:8px!important;}
-[data-testid="stChatMessage"]{background:var(--white)!important;border:1.5px solid var(--border)!important;border-radius:var(--r)!important;direction:rtl!important;margin-bottom:8px!important;}
+.stLinkButton a:hover{background:var(--teal)!important;color:var(--dark)!important;}
+[data-testid="stChatMessage"]{background:#fff!important;border:1.5px solid var(--border)!important;border-radius:var(--r)!important;direction:rtl!important;margin-bottom:8px!important;}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(46,196,182,.3);border-radius:4px;}
-</style>"""
+</style>""", unsafe_allow_html=True)
 
 # ─── Data ───
 ROOT       = Path(__file__).resolve().parent
@@ -187,182 +123,214 @@ N_PROGS = len(progs_raw)
 N_CTRY  = unis_raw["country"].nunique() if not unis_raw.empty else 0
 N_SCH   = int(unis_raw["scholarship"].apply(uni_has_sch).sum()) if not unis_raw.empty else 0
 
-st.markdown(CSS, unsafe_allow_html=True)
-
+# ── Session state ──
 if "page" not in st.session_state: st.session_state.page = "الرئيسية"
 PAGES = ["الرئيسية","بحث الجامعات","المقارنة","رُشد","البيانات","من نحن"]
 
-# ── Nav: logo col + one col per page ──
-active_idx = PAGES.index(st.session_state.page)
+# ══════════════════════════════════════════════
+# NAV BAR  —  rendered as HTML, wired to st.buttons hidden in zero-height container
+# ══════════════════════════════════════════════
+def nav_item(label, page_key):
+    active = "nav-active" if st.session_state.page == page_key else ""
+    return f'<button class="nav-btn {active}" onclick="navClick(this)" data-page="{page_key}">{label}</button>'
 
-nav_cols = st.columns([1.4] + [1]*len(PAGES))
-with nav_cols[0]:
-    st.markdown('<div class="baw-logo-cell">بو<span>صلة</span></div>', unsafe_allow_html=True)
-for i, name in enumerate(PAGES):
-    with nav_cols[i+1]:
-        if st.button(name, key=f"nav_{name}", use_container_width=True):
-            st.session_state.page = name; st.rerun()
+nav_html = "".join([nav_item(p, p) for p in PAGES])
 
-# CSS: style the real Streamlit nav row as a dark navbar
-st.markdown(f"""<style>
-/* ── Nav row wrapper ── */
-div[data-testid="stMainBlockContainer"] > div > div > div:first-child
-  div[data-testid="stHorizontalBlock"]:first-of-type {{
-  background:#17252A!important;
-  padding:0 24px!important;
-  gap:2px!important;
-  align-items:center!important;
-  min-height:58px!important;
-  border-radius:18px 18px 0 0!important;
-  margin:0!important;
+st.markdown(f"""
+<style>
+.baw-navbar{{
+  background:#17252A;display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:60px;direction:rtl;
 }}
-/* Logo cell */
-div[data-testid="stMainBlockContainer"] > div > div > div:first-child
-  div[data-testid="stHorizontalBlock"]:first-of-type
-  [data-testid="column"]:first-child {{
-  display:flex!important; align-items:center!important;
+.baw-logo{{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:#FEFFFF;white-space:nowrap;}}
+.baw-logo em{{color:#2EC4B6;font-style:normal;}}
+.nav-links{{display:flex;gap:2px;align-items:center;flex-wrap:nowrap;}}
+.nav-btn{{
+  font-family:'IBM Plex Sans Arabic',sans-serif;font-size:13px;font-weight:500;
+  color:rgba(255,255,255,.5);background:none;border:none;
+  padding:7px 13px;border-radius:8px;cursor:pointer;
+  white-space:nowrap;transition:all .15s;
 }}
-.baw-logo-cell{{
-  font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
-  color:#FEFFFF;letter-spacing:-0.5px;white-space:nowrap;padding:0 8px;
+.nav-btn:hover{{background:rgba(255,255,255,.09);color:#fff;}}
+.nav-btn.nav-active{{background:#2EC4B6;color:#17252A;font-weight:700;}}
+</style>
+<div class="baw-navbar">
+  <div class="baw-logo">بو<em>صلة</em></div>
+  <div class="nav-links">{nav_html}</div>
+</div>
+<script>
+function navClick(btn){{
+  var page = btn.getAttribute('data-page');
+  // Find and click the matching hidden Streamlit button
+  var allBtns = window.parent.document.querySelectorAll('button[kind="secondary"]');
+  allBtns.forEach(function(b){{ if(b.innerText.trim() === page) b.click(); }});
 }}
-.baw-logo-cell span{{color:#2EC4B6;}}
-/* All nav buttons */
+</script>
+""", unsafe_allow_html=True)
+
+# Hidden functional nav buttons (zero-height)
+st.markdown("""<style>
 div[data-testid="stMainBlockContainer"] > div > div > div:first-child
-  div[data-testid="stHorizontalBlock"]:first-of-type button {{
-  background:transparent!important;
-  border:none!important;box-shadow:none!important;
-  color:#9AACAC!important;
-  font-size:13px!important;font-weight:500!important;
-  font-family:'IBM Plex Sans Arabic',sans-serif!important;
-  padding:8px 10px!important;border-radius:8px!important;
-  white-space:nowrap!important;height:38px!important;
-  transition:all .15s!important;
-}}
-div[data-testid="stMainBlockContainer"] > div > div > div:first-child
-  div[data-testid="stHorizontalBlock"]:first-of-type button:hover {{
-  background:rgba(255,255,255,.08)!important;color:#FEFFFF!important;
-}}
-/* Active tab */
-div[data-testid="stMainBlockContainer"] > div > div > div:first-child
-  div[data-testid="stHorizontalBlock"]:first-of-type
-  [data-testid="column"]:nth-child({active_idx+2}) button {{
-  background:#2EC4B6!important;color:#17252A!important;font-weight:700!important;
+  > div[data-testid="stVerticalBlock"] > div:nth-child(2) {{
+  height:0!important;overflow:hidden!important;margin:0!important;padding:0!important;
 }}
 </style>""", unsafe_allow_html=True)
 
+_nav_cols = st.columns(len(PAGES))
+for _i, _name in enumerate(PAGES):
+    with _nav_cols[_i]:
+        if st.button(_name, key=f"nav_{_name}", use_container_width=True):
+            st.session_state.page = _name; st.rerun()
 
-def back_home():
-    if st.button("← الرئيسية", key="back_home_btn"):
+# Separator
+st.markdown('<div style="height:1px;background:#DEF2F1;"></div>', unsafe_allow_html=True)
+
+# ── Helpers ──
+P = st.session_state.page
+
+def section_tag(t):   st.markdown(f'<p style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2EC4B6;margin-bottom:6px;text-align:right;">{t}</p>', unsafe_allow_html=True)
+def section_h(t):     st.markdown(f'<h2 style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:#17252A;letter-spacing:-.5px;margin-bottom:22px;text-align:right;">{t}</h2>', unsafe_allow_html=True)
+def section_h_sm(t):  st.markdown(f'<h3 style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#17252A;letter-spacing:-.3px;margin-bottom:14px;text-align:right;">{t}</h3>', unsafe_allow_html=True)
+def divider():        st.markdown('<hr style="height:1px;background:rgba(23,37,42,.08);border:none;margin:36px 0;">', unsafe_allow_html=True)
+def page_start():     st.markdown('<div style="padding:36px 44px 52px;direction:rtl;">', unsafe_allow_html=True)
+def page_end():       st.markdown('</div>', unsafe_allow_html=True)
+def back_btn():
+    if st.button("← الرئيسية", key="back_btn"):
         st.session_state.page = "الرئيسية"; st.rerun()
+    st.markdown('<div style="margin-bottom:24px;"></div>', unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════
 # الرئيسية
 # ══════════════════════════════════════════════
-if st.session_state.page == "الرئيسية":
-    st.markdown('<div class="page-body">', unsafe_allow_html=True)
+if P == "الرئيسية":
+    page_start()
 
     # Hero
     st.markdown(f"""
-<div style="text-align:center;padding:48px 0 0;direction:rtl;">
-  <div style="display:flex;justify-content:center;margin-bottom:0;">
-    <div class="hero-tag"><span class="hero-tag-dot"></span>الدليل الذكي للتعليم الخليجي</div>
+<div style="text-align:center;padding:48px 0 40px;direction:rtl;">
+  <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(46,196,182,.1);border:1px solid rgba(46,196,182,.25);border-radius:100px;padding:5px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#2B7A77;margin-bottom:24px;">
+    <span style="width:5px;height:5px;border-radius:50%;background:#2EC4B6;display:inline-block;animation:pulse 2s infinite;"></span>
+    الدليل الذكي للتعليم الخليجي
   </div>
-  <div class="hero-big">بو<em>صلة</em></div>
-  <div class="hero-rule"></div>
-  <div class="hero-sub">اكتشف الجامعات، قارن التخصصات، واتخذ قرارك التعليمي بثقة<br>مع مستشار ذكي يتحدث العربية</div>
-  <div class="hero-stats">
-    <div class="hero-stat-item"><div class="hero-stat-n">{N_UNIS}+</div><div class="hero-stat-l">جامعة</div></div>
-    <div class="hero-stat-item"><div class="hero-stat-n">{N_CTRY}</div><div class="hero-stat-l">دولة خليجية</div></div>
-    <div class="hero-stat-item"><div class="hero-stat-n">{N_PROGS}+</div><div class="hero-stat-l">برنامج</div></div>
-    <div class="hero-stat-item"><div class="hero-stat-n">{N_SCH}</div><div class="hero-stat-l">منحة متاحة</div></div>
+  <div style="font-family:Syne,sans-serif;font-size:82px;font-weight:800;color:#17252A;line-height:.95;letter-spacing:-4px;margin-bottom:20px;">
+    بو<span style="color:#2EC4B6;">صلة</span>
+  </div>
+  <div style="width:52px;height:3px;background:#2EC4B6;border-radius:2px;margin:0 auto 20px;"></div>
+  <div style="font-size:16px;color:#3B7A77;line-height:1.85;max-width:500px;margin:0 auto 36px;">
+    اكتشف الجامعات، قارن التخصصات، واتخذ قرارك التعليمي بثقة<br>مع مستشار ذكي يتحدث العربية
+  </div>
+  <div style="display:flex;justify-content:center;">
+    <div style="display:flex;border:1.5px solid #DEF2F1;border-radius:14px;overflow:hidden;">
+      <div style="padding:16px 28px;text-align:center;border-left:1.5px solid #DEF2F1;">
+        <div style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#17252A;">{N_UNIS}+</div>
+        <div style="font-size:11px;color:#9AACAC;margin-top:3px;">جامعة</div>
+      </div>
+      <div style="padding:16px 28px;text-align:center;border-left:1.5px solid #DEF2F1;">
+        <div style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#17252A;">{N_CTRY}</div>
+        <div style="font-size:11px;color:#9AACAC;margin-top:3px;">دولة خليجية</div>
+      </div>
+      <div style="padding:16px 28px;text-align:center;border-left:1.5px solid #DEF2F1;">
+        <div style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#17252A;">{N_PROGS}+</div>
+        <div style="font-size:11px;color:#9AACAC;margin-top:3px;">برنامج</div>
+      </div>
+      <div style="padding:16px 28px;text-align:center;">
+        <div style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#17252A;">{N_SCH}</div>
+        <div style="font-size:11px;color:#9AACAC;margin-top:3px;">منحة متاحة</div>
+      </div>
+    </div>
   </div>
 </div>
+<style>@keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:.3}}}}</style>
 """, unsafe_allow_html=True)
 
-    # Divider label
+    divider()
+
+    # Section title centered
+    st.markdown('<p style="text-align:center;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2EC4B6;margin-bottom:10px;">خدماتنا</p>', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-family:Syne,sans-serif;font-size:24px;font-weight:800;color:#17252A;text-align:center;margin-bottom:28px;letter-spacing:-.5px;">اختر ما يناسبك</h2>', unsafe_allow_html=True)
+
+    # 3 nav cards
+    c1, c2, c3 = st.columns(3)
+    cards = [
+        ("بحث الجامعات", "🔍", "ابحث في قاعدة بيانات الجامعات الخليجية وصفّ النتائج حسب الدولة والتخصص والمنح.", "بحث الجامعات"),
+        ("مقارنة الجامعات", "⚖️", "قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — المنح، الترتيب، والروابط الرسمية.", "المقارنة"),
+        ("رُشد — المستشار الذكي", "🧭", "تحدّث بالعربية مع مستشار AI يرشّح لك الجامعات ويشرح أسباب كل توصية.", "رُشد"),
+    ]
+    for col, (title, icon, body, dest) in zip([c1, c2, c3], cards):
+        with col:
+            st.markdown(f"""
+<div style="border:1.5px solid #DEF2F1;border-radius:16px;padding:28px 22px;background:#fff;min-height:200px;text-align:right;direction:rtl;">
+  <div style="font-size:28px;margin-bottom:14px;">{icon}</div>
+  <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:#17252A;margin-bottom:10px;">{title}</div>
+  <div style="font-size:13px;color:#3B7A77;line-height:1.75;">{body}</div>
+</div>
+""", unsafe_allow_html=True)
+            if st.button(f"انتقل ←", key=f"card_{dest}", use_container_width=True):
+                st.session_state.page = dest; st.rerun()
+
+    divider()
+
+    # Additional nav row
+    c4, c5 = st.columns(2)
+    with c4:
+        st.markdown("""
+<div style="border:1.5px solid #DEF2F1;border-radius:16px;padding:28px 22px;background:#fff;text-align:right;direction:rtl;">
+  <div style="font-size:28px;margin-bottom:14px;">📊</div>
+  <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:#17252A;margin-bottom:10px;">لوحة البيانات</div>
+  <div style="font-size:13px;color:#3B7A77;line-height:1.75;">مخططات تفاعلية وتقارير إحصائية عن التعليم العالي في دول الخليج.</div>
+</div>
+""", unsafe_allow_html=True)
+        if st.button("انتقل إلى البيانات ←", key="card_data", use_container_width=True):
+            st.session_state.page = "البيانات"; st.rerun()
+    with c5:
+        st.markdown("""
+<div style="border:1.5px solid #DEF2F1;border-radius:16px;padding:28px 22px;background:#fff;text-align:right;direction:rtl;">
+  <div style="font-size:28px;margin-bottom:14px;">🏛️</div>
+  <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:800;color:#17252A;margin-bottom:10px;">من نحن</div>
+  <div style="font-size:13px;color:#3B7A77;line-height:1.75;">تعرّف على منصة بوصلة ورؤيتها ورسالتها وقيمها.</div>
+</div>
+""", unsafe_allow_html=True)
+        if st.button("انتقل إلى من نحن ←", key="card_about", use_container_width=True):
+            st.session_state.page = "من نحن"; st.rerun()
+
+    divider()
+
+    # Vision / Mission / Values
+    section_tag("هويتنا")
+    section_h("رؤيتنا ورسالتنا وقيمنا")
     st.markdown("""
-<div style="height:52px;display:flex;align-items:center;justify-content:center;">
-  <div style="display:flex;align-items:center;gap:12px;color:#9AACAC;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;">
-    <div style="width:40px;height:1px;background:#DEF2F1;"></div>
-    ماذا يقدم بوصلة
-    <div style="width:40px;height:1px;background:#DEF2F1;"></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;direction:rtl;">
+  <div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.15);border-radius:14px;padding:22px 18px;">
+    <div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#17252A;margin-bottom:10px;text-align:right;">رؤيتنا</div>
+    <div style="font-size:13px;color:#3B7A77;line-height:1.7;text-align:right;">إعادة تعريف تجربة اختيار التعليم في الخليج — منصة ذكية توجّه الشباب نحو مستقبلهم بثقة.</div>
+  </div>
+  <div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.15);border-radius:14px;padding:22px 18px;">
+    <div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#17252A;margin-bottom:10px;text-align:right;">رسالتنا</div>
+    <div style="font-size:13px;color:#3B7A77;line-height:1.7;text-align:right;">تمكين الطلبة من اتخاذ قرارات تعليمية دقيقة باستخدام الذكاء الاصطناعي والبيانات الموثوقة.</div>
+  </div>
+  <div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.15);border-radius:14px;padding:22px 18px;">
+    <div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#17252A;margin-bottom:10px;text-align:right;">قيمنا</div>
+    <div style="font-size:13px;color:#3B7A77;line-height:1.7;text-align:right;">الوضوح · العدالة · التمكين · الابتكار · الموثوقية</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section-h" style="text-align:center;margin-bottom:28px;">منصة واحدة — كل خياراتك الأكاديمية</div>', unsafe_allow_html=True)
-
-    # Feature cards with Streamlit buttons underneath
-    st.markdown("""<div class="feat-grid">
-  <div class="feat-card" id="card-rushd">
-    <div class="feat-num">01 — المستشار الذكي</div>
-    <div class="feat-title">رُشد</div>
-    <div class="feat-body">تحدّث بالعربية — رُشد يفهم ملفك ويرشّح أفضل الجامعات مع شرح كل توصية.</div>
-    <div class="feat-arrow">انتقل ←</div>
-  </div>
-  <div class="feat-card" id="card-data">
-    <div class="feat-num">02 — الإحصاء والتحليل</div>
-    <div class="feat-title">لوحة البيانات</div>
-    <div class="feat-body">مخططات تفاعلية وتقارير ذكية تحوّل بيانات التعليم الخليجي إلى رؤى واضحة.</div>
-    <div class="feat-arrow">انتقل ←</div>
-  </div>
-  <div class="feat-card" id="card-compare">
-    <div class="feat-num">03 — القرار المدروس</div>
-    <div class="feat-title">المقارنة</div>
-    <div class="feat-body">قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — المنح، الترتيب، والروابط الرسمية.</div>
-    <div class="feat-arrow">انتقل ←</div>
-  </div>
-</div>""", unsafe_allow_html=True)
-
-    fc1, fc2, fc3 = st.columns(3)
-    if fc1.button("انتقل إلى رُشد",       use_container_width=True, key="hero_rushd"):   st.session_state.page="رُشد";       st.rerun()
-    if fc2.button("انتقل إلى البيانات",   use_container_width=True, key="hero_data"):    st.session_state.page="البيانات";   st.rerun()
-    if fc3.button("انتقل إلى المقارنة",   use_container_width=True, key="hero_compare"): st.session_state.page="المقارنة";   st.rerun()
-
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
-
-    # Vision / Mission / Values — compact cards
-    st.markdown('<div class="section-tag">هويتنا</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">رؤيتنا ورسالتنا وقيمنا</div>', unsafe_allow_html=True)
-    st.markdown("""<div class="vision-grid">
-  <div class="vision-card">
-    <div class="vision-title">رؤيتنا</div>
-    <div class="vision-body">إعادة تعريف تجربة اختيار التعليم في الخليج — منصة ذكية توجّه الشباب نحو تخصصاتهم بثقة.</div>
-  </div>
-  <div class="vision-card">
-    <div class="vision-title">رسالتنا</div>
-    <div class="vision-body">تمكين الطلبة من اتخاذ قرارات تعليمية دقيقة باستخدام الذكاء الاصطناعي والبيانات الموثوقة.</div>
-  </div>
-  <div class="vision-card">
-    <div class="vision-title">قيمنا</div>
-    <div class="vision-body">الوضوح · العدالة · التمكين · الابتكار · الموثوقية — خمس ركائز تحرّك كل ما نبنيه.</div>
-  </div>
-</div>""", unsafe_allow_html=True)
-
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
-
-    b1, b2, b3 = st.columns(3)
-    if b1.button("المستشار رُشد",  use_container_width=True): st.session_state.page="رُشد";         st.rerun()
-    if b2.button("تحليل البيانات", use_container_width=True): st.session_state.page="البيانات";     st.rerun()
-    if b3.button("بحث الجامعات",  use_container_width=True): st.session_state.page="بحث الجامعات"; st.rerun()
-
-    st.markdown('</div>', unsafe_allow_html=True)
+    page_end()
 
 
 # ══════════════════════════════════════════════
 # بحث الجامعات
 # ══════════════════════════════════════════════
-elif st.session_state.page == "بحث الجامعات":
+elif P == "بحث الجامعات":
     unis  = unis_raw.copy()
     progs = progs_raw.copy()
     if unis.empty: st.error("ملف universities.csv غير موجود."); st.stop()
 
-    st.markdown('<div class="page-body">', unsafe_allow_html=True)
-    back_home()
-    st.markdown('<div class="section-tag">الاستكشاف</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">بحث الجامعات</div>', unsafe_allow_html=True)
+    page_start()
+    back_btn()
+    section_tag("الاستكشاف")
+    section_h("بحث الجامعات")
 
     q = st.text_input("", placeholder="ابحث عن جامعة، مدينة، أو دولة...").strip().lower()
 
@@ -377,14 +345,13 @@ elif st.session_state.page == "بحث الجامعات":
     major     = c4.selectbox("التخصص",  ["الكل"] + majors_)
     yn        = c5.selectbox("المنح",   ["الكل", "متاحة", "غير متاحة"])
 
-    # Check if user has searched / filtered
     has_searched = bool(q) or country != "الكل" or uni_type != "الكل" or level != "الكل" or major != "الكل" or yn != "الكل"
 
     if not has_searched:
         st.markdown("""
-<div style="text-align:center;padding:56px 0;color:#9AACAC;">
-  <div style="font-size:48px;margin-bottom:16px;">🔍</div>
-  <div style="font-size:15px;font-weight:600;color:#3B7A77;margin-bottom:8px;">ابحث للبدء</div>
+<div style="text-align:center;padding:64px 0;color:#9AACAC;direction:rtl;">
+  <div style="font-size:44px;margin-bottom:16px;">🔍</div>
+  <div style="font-size:15px;font-weight:600;color:#2B7A77;margin-bottom:8px;">ابحث للبدء</div>
   <div style="font-size:13px;">اكتب اسم جامعة أو دولة، أو استخدم الفلاتر أعلاه</div>
 </div>
 """, unsafe_allow_html=True)
@@ -405,40 +372,46 @@ elif st.session_state.page == "بحث الجامعات":
             if level != "الكل": pm = pm[pm["level"] == level]
             f = f[f["uni_id"].isin(pm["uni_id"].unique())]
 
-        st.markdown(f'<div class="chip">{len(f)} نتيجة</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(46,196,182,.08);border:1.5px solid rgba(46,196,182,.25);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;color:#2B7A77;margin-bottom:20px;">{len(f)} نتيجة</div>', unsafe_allow_html=True)
+
         if f.empty:
             st.info("لا توجد نتائج — جرّب تعديل الفلاتر.")
         else:
             for _, row in f.head(30).iterrows():
                 is_pub   = str(row["type"]).strip().lower() in ["public", "حكومية"]
-                type_tag = '<span class="tag tag-gov">حكومية</span>' if is_pub else '<span class="tag tag-priv">خاصة</span>'
-                sch_tag  = '<span class="tag tag-sch">منحة دراسية</span>' if uni_has_sch(str(row["scholarship"])) else ""
+                type_tag = '<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(46,196,182,.1);color:#2B7A77;border:1px solid rgba(46,196,182,.25);">حكومية</span>' if is_pub else '<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(23,37,42,.06);color:#17252A;border:1px solid rgba(23,37,42,.1);">خاصة</span>'
+                sch_tag  = '<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;">منحة دراسية</span>' if uni_has_sch(str(row["scholarship"])) else ""
                 lang_tags = ""
                 if not progs.empty:
                     for lg in progs[progs["uni_id"] == str(row["uni_id"])]["language"].dropna().unique()[:2]:
-                        lang_tags += f'<span class="tag tag-lang">{lg}</span>'
+                        lang_tags += f'<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#F0F9FF;color:#0369A1;border:1px solid #BAE6FD;">{lg}</span>'
                 links = ""
-                if str(row.get("website", "")).strip():        links += f'<a href="{row["website"]}" target="_blank" class="uni-link">الموقع الرسمي</a>'
-                if str(row.get("admissions_url", "")).strip(): links += f'<a href="{row["admissions_url"]}" target="_blank" class="uni-link">القبول</a>'
-                st.markdown(f"""<div class="uni-card">
-  <div><div class="uni-name">{row["name_ar"]} <span style="font-weight:400;color:#9AACAC;font-size:12px;">— {row["name_en"]}</span></div><div class="uni-sub">{row["city"]}, {row["country"]}</div><div class="tags" style="margin-top:8px;">{type_tag}{sch_tag}{lang_tags}</div></div>
-  <div class="uni-right">{links}</div>
+                if str(row.get("website", "")).strip():        links += f'<a href="{row["website"]}" target="_blank" style="font-size:12px;font-weight:600;color:#2EC4B6;text-decoration:none;padding:5px 12px;border:1.5px solid rgba(46,196,182,.3);border-radius:7px;background:rgba(46,196,182,.05);white-space:nowrap;">الموقع الرسمي</a>'
+                if str(row.get("admissions_url", "")).strip(): links += f'<a href="{row["admissions_url"]}" target="_blank" style="font-size:12px;font-weight:600;color:#2EC4B6;text-decoration:none;padding:5px 12px;border:1.5px solid rgba(46,196,182,.3);border-radius:7px;background:rgba(46,196,182,.05);white-space:nowrap;margin-right:6px;">القبول</a>'
+                st.markdown(f"""
+<div style="background:#fff;border:1.5px solid rgba(23,37,42,.1);border-radius:12px;padding:16px 20px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:16px;direction:rtl;">
+  <div>
+    <div style="font-size:14px;font-weight:700;color:#17252A;margin-bottom:3px;">{row["name_ar"]} <span style="font-weight:400;color:#9AACAC;font-size:12px;">— {row["name_en"]}</span></div>
+    <div style="font-size:12px;color:#9AACAC;margin-bottom:8px;">{row["city"]}, {row["country"]}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">{type_tag}{sch_tag}{lang_tags}</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">{links}</div>
 </div>""", unsafe_allow_html=True)
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    page_end()
 
 
 # ══════════════════════════════════════════════
 # المقارنة
 # ══════════════════════════════════════════════
-elif st.session_state.page == "المقارنة":
+elif P == "المقارنة":
     unis = unis_raw.copy()
     if unis.empty: st.error("ملف universities.csv غير موجود."); st.stop()
 
-    st.markdown('<div class="page-body">', unsafe_allow_html=True)
-    back_home()
-    st.markdown('<div class="section-tag">التقييم المقارن</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">مقارنة الجامعات</div>', unsafe_allow_html=True)
+    page_start()
+    back_btn()
+    section_tag("التقييم المقارن")
+    section_h("مقارنة الجامعات")
 
     unis["uni_id"] = unis["uni_id"].astype(str).str.strip()
     unis = unis[unis["uni_id"].ne("") & unis["uni_id"].ne("nan")].drop_duplicates("uni_id")
@@ -450,21 +423,22 @@ elif st.session_state.page == "المقارنة":
                               format_func=lambda x: label_map.get(str(x), str(x)), max_selections=4)
     if len(selected) < 2:
         st.info("يرجى اختيار جامعتين على الأقل.")
-        st.markdown('</div>', unsafe_allow_html=True); st.stop()
+        page_end(); st.stop()
 
     comp = unis[unis["uni_id"].isin(selected)].copy()
     cols_c = st.columns(len(selected))
     for i, uid in enumerate(selected):
         row = comp[comp["uni_id"] == uid].iloc[0]
         with cols_c[i]:
-            sch  = (str(row.get("scholarship", "")).strip() or "—")
+            sch  = str(row.get("scholarship", "")).strip() or "—"
             rank = (str(row.get("ranking_source", "")).strip() + " " + str(row.get("ranking_value", "")).strip()).strip() or "—"
-            st.markdown(f"""<div class="comp-card">
-  <div class="comp-head">{row['name_ar']}</div>
-  <div class="comp-row"><span class="comp-label">الموقع</span><span class="comp-val">{row['city']}, {row['country']}</span></div>
-  <div class="comp-row"><span class="comp-label">النوع</span><span class="comp-val">{row['type']}</span></div>
-  <div class="comp-row"><span class="comp-label">المنح</span><span class="comp-val">{sch}</span></div>
-  <div class="comp-row"><span class="comp-label">الترتيب</span><span class="comp-val">{rank}</span></div>
+            st.markdown(f"""
+<div style="background:#fff;border:1.5px solid rgba(23,37,42,.1);border-radius:16px;padding:20px;direction:rtl;">
+  <div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#17252A;margin-bottom:14px;padding-bottom:12px;border-bottom:1.5px solid rgba(23,37,42,.1);">{row['name_ar']}</div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(23,37,42,.04);"><span style="font-size:12px;color:#9AACAC;">الموقع</span><span style="font-size:13px;font-weight:600;">{row['city']}, {row['country']}</span></div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(23,37,42,.04);"><span style="font-size:12px;color:#9AACAC;">النوع</span><span style="font-size:13px;font-weight:600;">{row['type']}</span></div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(23,37,42,.04);"><span style="font-size:12px;color:#9AACAC;">المنح</span><span style="font-size:13px;font-weight:600;">{sch}</span></div>
+  <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:#9AACAC;">الترتيب</span><span style="font-size:13px;font-weight:600;">{rank}</span></div>
 </div>""", unsafe_allow_html=True)
             st.write("")
             if str(row.get("website", "")).strip():        st.link_button("الموقع الرسمي",      row["website"],        use_container_width=True)
@@ -473,9 +447,9 @@ elif st.session_state.page == "المقارنة":
 
     progs = progs_raw.copy()
     if not progs.empty and "uni_id" in progs.columns:
-        st.markdown('<hr class="divider">', unsafe_allow_html=True)
-        st.markdown('<div class="section-tag">البرامج الأكاديمية</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-h-sm">البرامج المتاحة للجامعات المختارة</div>', unsafe_allow_html=True)
+        divider()
+        section_tag("البرامج الأكاديمية")
+        section_h_sm("البرامج المتاحة للجامعات المختارة")
         comp_progs = progs[progs["uni_id"].isin(selected)].copy()
         if comp_progs.empty:
             st.info("لا تتوفر بيانات برامج للجامعات المختارة.")
@@ -488,38 +462,38 @@ elif st.session_state.page == "المقارنة":
                 display_df["الجامعة"] = display_df["الجامعة"].map(id_to_ar).fillna(display_df["الجامعة"])
             st.dataframe(display_df, use_container_width=True, hide_index=True)
 
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
-    st.markdown('<div class="section-tag">الذكاء الاصطناعي</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h-sm">المقارنة الذكية</div>', unsafe_allow_html=True)
+    divider()
+    section_tag("الذكاء الاصطناعي")
+    section_h_sm("المقارنة الذكية")
     profile_txt = st.text_input("", placeholder="ملفك الأكاديمي (اختياري) — مثال: طالب هندسة، IELTS 6.5", key="comp_profile", label_visibility="collapsed")
     if st.button("اطلب مقارنة ذكية", use_container_width=True, key="btn_compare_ai"):
         unis_data = [comp[comp["uni_id"] == uid].iloc[0].to_dict() for uid in selected if uid in comp["uni_id"].values]
         with st.spinner("جاري تحليل الجامعات..."):
             ai_result = compare_unis_ai(unis_data, profile_txt)
-        st.markdown(f'<div class="ai-box"><span class="ai-label">المقارنة الذكية</span>{ai_result}</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.2);border-radius:14px;padding:22px 26px;margin-top:14px;line-height:2;color:#17252A;direction:rtl;"><span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2EC4B6;margin-bottom:10px;display:block;">المقارنة الذكية</span>{ai_result}</div>', unsafe_allow_html=True)
+    page_end()
 
 
 # ══════════════════════════════════════════════
 # رُشد
 # ══════════════════════════════════════════════
-elif st.session_state.page == "رُشد":
+elif P == "رُشد":
     unis  = unis_raw.copy()
     progs = progs_raw.copy()
     if unis.empty: st.error("ملف universities.csv غير موجود."); st.stop()
 
-    st.markdown('<div class="page-body">', unsafe_allow_html=True)
-    back_home()
-    st.markdown('<div class="section-tag">المستشار الأكاديمي الذكي</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">رُشد</div>', unsafe_allow_html=True)
-    st.markdown('<p style="color:#9AACAC;font-size:14px;margin-bottom:28px;margin-top:-14px;">تحدّث بالعربية — رُشد يفهم ملفك ويرشّح الجامعات المناسبة</p>', unsafe_allow_html=True)
+    page_start()
+    back_btn()
+    section_tag("المستشار الأكاديمي الذكي")
+    section_h("رُشد")
+    st.markdown('<p style="color:#9AACAC;font-size:14px;margin-bottom:28px;margin-top:-14px;text-align:right;">تحدّث بالعربية — رُشد يفهم ملفك ويرشّح الجامعات المناسبة</p>', unsafe_allow_html=True)
 
     if "unis_context" not in st.session_state:
         with st.spinner("جاري تحضير قاعدة البيانات..."):
             st.session_state.unis_context = build_unis_context(unis, progs)
 
-    st.markdown('<div class="section-tag">التحليل الفوري</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h-sm">التحليل السريع</div>', unsafe_allow_html=True)
+    section_tag("التحليل الفوري")
+    section_h_sm("التحليل السريع")
     qm_c1, qm_c2, qm_c3 = st.columns(3)
     countries_list = sorted([x for x in unis["country"].unique() if str(x).strip()])
     qm_country = qm_c1.selectbox("الدولة المفضلة", ["الكل"] + countries_list, key="qm_country")
@@ -545,20 +519,21 @@ elif st.session_state.page == "رُشد":
                     city_country = ""; sch_tag = ""
                     if not uni_row.empty:
                         r = uni_row.iloc[0]; city_country = f"{r.get('city','')}, {r.get('country','')}"
-                        if uni_has_sch(str(r.get("scholarship", ""))): sch_tag = '<span class="tag tag-sch">منحة دراسية</span>'
+                        if uni_has_sch(str(r.get("scholarship", ""))): sch_tag = '<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;">منحة دراسية</span>'
                     with qr_cols[i]:
-                        st.markdown(f"""<div class="uni-card" style="flex-direction:column;align-items:flex-start;border-top:3px solid var(--teal);">
-  <div class="uni-name">{name_ar}</div><div class="uni-sub">{city_country}</div>
-  <div style="color:#9AACAC;font-size:13px;margin:8px 0;line-height:1.7;">{reason}</div>
-  <div class="tags">{sch_tag}<span class="tag tag-gov">{fit}</span></div>
+                        st.markdown(f"""<div style="background:#fff;border:1.5px solid rgba(23,37,42,.1);border-top:3px solid #2EC4B6;border-radius:12px;padding:18px;direction:rtl;">
+<div style="font-size:14px;font-weight:700;color:#17252A;">{name_ar}</div>
+<div style="font-size:12px;color:#9AACAC;margin:3px 0 8px;">{city_country}</div>
+<div style="color:#9AACAC;font-size:13px;margin-bottom:10px;line-height:1.7;">{reason}</div>
+<div style="display:flex;flex-wrap:wrap;gap:5px;">{sch_tag}<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(46,196,182,.1);color:#2B7A77;border:1px solid rgba(46,196,182,.25);">{fit}</span></div>
 </div>""", unsafe_allow_html=True)
             if advice:
-                st.markdown(f'<div class="ai-box" style="margin-top:16px;"><span class="ai-label">نصيحة رُشد</span>{advice}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.2);border-radius:14px;padding:22px 26px;margin-top:14px;line-height:2;color:#17252A;direction:rtl;"><span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2EC4B6;display:block;margin-bottom:8px;">نصيحة رُشد</span>{advice}</div>', unsafe_allow_html=True)
             if missing:
-                missing_html = "".join([f'<span class="tag tag-sch" style="margin:3px;">{m}</span>' for m in missing])
-                st.markdown(f'<div style="margin-top:10px;"><span style="color:#9AACAC;font-size:13px;margin-left:8px;">قد تحتاج إلى:</span>{missing_html}</div>', unsafe_allow_html=True)
+                missing_html = "".join([f'<span style="padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;margin:3px;">{m}</span>' for m in missing])
+                st.markdown(f'<div style="margin-top:10px;direction:rtl;"><span style="color:#9AACAC;font-size:13px;margin-left:8px;">قد تحتاج إلى:</span>{missing_html}</div>', unsafe_allow_html=True)
 
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
+    divider()
 
     if "rushd_messages" not in st.session_state:
         st.session_state.rushd_messages = [{"role":"assistant","content":"مرحباً، أنا رُشد.\n\nأخبرني عن نفسك:\n- التخصص الذي تريده\n- الدولة المفضلة\n- معدلك التقريبي\n- هل عندك IELTS وكم درجتك؟\n\nوسأرشّح لك الجامعات المناسبة."}]
@@ -579,21 +554,21 @@ elif st.session_state.page == "رُشد":
 
     if len(st.session_state.rushd_messages) > 1:
         if st.button("محادثة جديدة"): st.session_state.rushd_messages = []; st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
+    page_end()
 
 
 # ══════════════════════════════════════════════
 # البيانات
 # ══════════════════════════════════════════════
-elif st.session_state.page == "البيانات":
+elif P == "البيانات":
     unis  = unis_raw.copy()
     progs = progs_raw.copy()
     if unis.empty: st.error("لا تتوفر بيانات."); st.stop()
 
-    st.markdown('<div class="page-body">', unsafe_allow_html=True)
-    back_home()
-    st.markdown('<div class="section-tag">الإحصاء والتحليل</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">لوحة البيانات</div>', unsafe_allow_html=True)
+    page_start()
+    back_btn()
+    section_tag("الإحصاء والتحليل")
+    section_h("لوحة البيانات")
 
     by_country = unis["country"].value_counts().to_dict()
     by_type    = unis["type"].value_counts().to_dict()
@@ -601,29 +576,21 @@ elif st.session_state.page == "البيانات":
     top_fields = progs["major_field"].value_counts().head(8).to_dict() if not progs.empty else {}
     by_lang    = progs["language"].value_counts().to_dict() if not progs.empty else {}
 
-    st.markdown(f"""<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;justify-content:center;">
-  <div style="background:var(--pale);border:1.5px solid rgba(46,196,182,.2);border-radius:var(--r);padding:20px 24px;min-width:130px;text-align:center;">
-    <div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:var(--teal);">{N_UNIS}</div>
-    <div style="font-size:12px;color:var(--muted);margin-top:4px;">إجمالي الجامعات</div>
-  </div>
-  <div style="background:var(--pale);border:1.5px solid rgba(46,196,182,.2);border-radius:var(--r);padding:20px 24px;min-width:130px;text-align:center;">
-    <div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:var(--teal);">{N_PROGS}</div>
-    <div style="font-size:12px;color:var(--muted);margin-top:4px;">إجمالي البرامج</div>
-  </div>
-  <div style="background:var(--pale);border:1.5px solid rgba(46,196,182,.2);border-radius:var(--r);padding:20px 24px;min-width:130px;text-align:center;">
-    <div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:var(--teal);">{with_sch}</div>
-    <div style="font-size:12px;color:var(--muted);margin-top:4px;">تقدم منحاً</div>
-  </div>
-  <div style="background:var(--pale);border:1.5px solid rgba(46,196,182,.2);border-radius:var(--r);padding:20px 24px;min-width:130px;text-align:center;">
-    <div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:var(--teal);">{N_CTRY}</div>
-    <div style="font-size:12px;color:var(--muted);margin-top:4px;">دولة خليجية</div>
-  </div>
+    # Stats row
+    stats = [("إجمالي الجامعات", N_UNIS), ("إجمالي البرامج", N_PROGS), ("تقدم منحاً", with_sch), ("دولة خليجية", N_CTRY)]
+    cols_s = st.columns(4)
+    for col, (label, val) in zip(cols_s, stats):
+        col.markdown(f"""<div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.2);border-radius:12px;padding:20px;text-align:center;">
+<div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:#2EC4B6;">{val}</div>
+<div style="font-size:12px;color:#3B7A77;margin-top:4px;">{label}</div>
 </div>""", unsafe_allow_html=True)
 
-    # Chart theme — no height in T to avoid duplicate kwarg
+    st.markdown("<div style='margin-top:28px;'></div>", unsafe_allow_html=True)
+
     T = dict(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
              font=dict(family="IBM Plex Sans Arabic", color="#9AACAC"),
              margin=dict(l=10, r=10, t=38, b=10), height=290)
+    T_sm = {**T, "height": 260}
 
     ch1, ch2, ch3 = st.columns(3)
     with ch1:
@@ -644,13 +611,12 @@ elif st.session_state.page == "البيانات":
             fig.update_layout(**T, xaxis_tickangle=-30); fig.update_traces(marker_line_width=0)
             st.plotly_chart(fig, use_container_width=True)
 
-    T_sm = {**T, "height": 260}  # separate dict to avoid duplicate height kwarg
     ch4, ch5 = st.columns(2)
     with ch4:
         pct = round(with_sch / max(len(unis), 1) * 100, 1)
         fig = go.Figure(go.Indicator(
             mode="gauge+number", value=pct,
-            title={"text":"نسبة الجامعات التي تقدم منحاً %","font":{"family":"IBM Plex Sans Arabic","color":"#9AACAC","size":13}},
+            title={"text":"% نسبة الجامعات التي تقدم منحاً","font":{"family":"IBM Plex Sans Arabic","color":"#9AACAC","size":13}},
             number={"font":{"color":"#2EC4B6","family":"IBM Plex Sans Arabic"}},
             gauge={"axis":{"range":[0,100],"tickcolor":"#DEF2F1"},"bar":{"color":"#2EC4B6"},
                    "bgcolor":"rgba(0,0,0,0)","bordercolor":"rgba(46,196,182,.1)",
@@ -664,10 +630,9 @@ elif st.session_state.page == "البيانات":
             fig.update_layout(**T_sm); fig.update_traces(marker_line_width=0)
             st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
-    st.markdown('<div class="section-tag">المنح الدراسية</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h-sm">توزيع المنح حسب الدولة</div>', unsafe_allow_html=True)
-
+    divider()
+    section_tag("المنح الدراسية")
+    section_h_sm("توزيع المنح حسب الدولة")
     if not unis.empty and "scholarship" in unis.columns:
         sch_data = []
         for _, row in unis.iterrows():
@@ -688,52 +653,68 @@ elif st.session_state.page == "البيانات":
             fig_sch.update_traces(marker_line_width=0)
             st.plotly_chart(fig_sch, use_container_width=True)
 
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
+    divider()
     col_r, col_g = st.columns(2)
     with col_r:
-        st.markdown('<div class="section-h-sm">التقرير التحليلي الذكي</div>', unsafe_allow_html=True)
-        st.markdown('<p style="font-size:13px;color:#9AACAC;margin-bottom:14px;">الذكاء الاصطناعي يحلل إحصاءات قاعدة البيانات ويكتب تقريراً شاملاً</p>', unsafe_allow_html=True)
+        section_h_sm("التقرير التحليلي الذكي")
+        st.markdown('<p style="font-size:13px;color:#9AACAC;margin-bottom:14px;text-align:right;">الذكاء الاصطناعي يحلل إحصاءات قاعدة البيانات ويكتب تقريراً شاملاً</p>', unsafe_allow_html=True)
         if st.button("اطلب التقرير", use_container_width=True):
             with st.spinner("جاري كتابة التقرير..."):
                 report = generate_dashboard_report({"total_unis":len(unis),"by_country":by_country,"by_type":by_type,"top_fields":top_fields,"by_language":by_lang,"with_scholarships":with_sch,"total_progs":len(progs)})
-            st.markdown(f'<div class="ai-box"><span class="ai-label">التقرير التحليلي</span>{report}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#EEF8F8;border:1.5px solid rgba(46,196,182,.2);border-radius:14px;padding:22px 26px;margin-top:14px;line-height:2;color:#17252A;direction:rtl;"><span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#2EC4B6;display:block;margin-bottom:8px;">التقرير التحليلي</span>{report}</div>', unsafe_allow_html=True)
     with col_g:
-        st.markdown('<div class="section-h-sm">تحليل الفجوات التعليمية</div>', unsafe_allow_html=True)
-        st.markdown('<p style="font-size:13px;color:#9AACAC;margin-bottom:14px;">رؤى إحصائية عن الفجوات في منظومة التعليم العالي الخليجي</p>', unsafe_allow_html=True)
+        section_h_sm("تحليل الفجوات التعليمية")
+        st.markdown('<p style="font-size:13px;color:#9AACAC;margin-bottom:14px;text-align:right;">رؤى إحصائية عن الفجوات في منظومة التعليم العالي الخليجي</p>', unsafe_allow_html=True)
         if st.button("اكشف الفجوات", use_container_width=True):
             with st.spinner("جاري التحليل..."):
                 gaps = analyze_gaps(unis, progs)
-            st.markdown(f'<div class="gap-box">{gaps}</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:22px 26px;margin-top:14px;line-height:2;color:#17252A;direction:rtl;">{gaps}</div>', unsafe_allow_html=True)
+    page_end()
 
 
 # ══════════════════════════════════════════════
 # من نحن
 # ══════════════════════════════════════════════
-elif st.session_state.page == "من نحن":
-    st.markdown('<div class="page-body">', unsafe_allow_html=True)
-    back_home()
-    st.markdown('<div class="section-tag">هويتنا</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h">من نحن</div>', unsafe_allow_html=True)
-    st.markdown("""<div style="font-size:15px;color:#2B7A77;line-height:2;margin-bottom:36px;max-width:760px;">
-<p style="color:#17252A;font-size:17px;font-weight:600;margin-bottom:14px;">منصة رقمية ذكية لاتخاذ قرارات تعليمية مدروسة في دول مجلس التعاون الخليجي.</p>
-<p>جاءت فكرة بوصلة استجابةً لتحدٍ واقعي — تشتّت المعلومات وصعوبة المقارنة بين الجامعات وتعدد المصادر غير الموثوقة.</p>
-<p style="margin-top:12px;">نجمع البيانات التعليمية الخليجية ونقدّمها بطريقة مبسّطة، مع توظيف الذكاء الاصطناعي لمساعدة المستخدم على اتخاذ قراره بثقة.</p>
-</div>""", unsafe_allow_html=True)
+elif P == "من نحن":
+    page_start()
+    back_btn()
+    section_tag("هويتنا")
+    section_h("من نحن")
+    st.markdown("""
+<div style="font-size:15px;color:#2B7A77;line-height:2;margin-bottom:32px;max-width:720px;direction:rtl;text-align:right;">
+  <p style="color:#17252A;font-size:17px;font-weight:600;margin-bottom:14px;">منصة رقمية ذكية لاتخاذ قرارات تعليمية مدروسة في دول مجلس التعاون الخليجي.</p>
+  <p>جاءت فكرة بوصلة استجابةً لتحدٍ واقعي — تشتّت المعلومات وصعوبة المقارنة بين الجامعات وتعدد المصادر غير الموثوقة.</p>
+  <p style="margin-top:12px;">نجمع البيانات التعليمية الخليجية ونقدّمها بطريقة مبسّطة، مع توظيف الذكاء الاصطناعي لمساعدة المستخدم على اتخاذ قراره بثقة.</p>
+</div>
+""", unsafe_allow_html=True)
 
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
-    st.markdown('<div class="section-tag">قيمنا</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h-sm" style="margin-bottom:18px;">ما يحركنا</div>', unsafe_allow_html=True)
-    st.markdown("""<div class="values-grid">
-  <div class="val-card"><div class="val-title">الوضوح</div><div class="val-body">تبسيط القرار التعليمي</div></div>
-  <div class="val-card"><div class="val-title">العدالة</div><div class="val-body">عرض الخيارات دون تحيّز</div></div>
-  <div class="val-card"><div class="val-title">التمكين</div><div class="val-body">فهم الذات قبل التخصص</div></div>
-  <div class="val-card"><div class="val-title">الابتكار</div><div class="val-body">AI في خدمة التعليم</div></div>
-</div>""", unsafe_allow_html=True)
+    divider()
+    section_tag("قيمنا")
+    section_h_sm("ما يحركنا")
+    st.markdown("""
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;direction:rtl;margin-bottom:32px;">
+  <div style="background:#EEF8F8;border-radius:12px;padding:18px 14px;text-align:center;border:1.5px solid rgba(46,196,182,.15);">
+    <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:#17252A;margin-bottom:5px;">الوضوح</div>
+    <div style="font-size:12px;color:#3B7A77;">تبسيط القرار التعليمي</div>
+  </div>
+  <div style="background:#EEF8F8;border-radius:12px;padding:18px 14px;text-align:center;border:1.5px solid rgba(46,196,182,.15);">
+    <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:#17252A;margin-bottom:5px;">العدالة</div>
+    <div style="font-size:12px;color:#3B7A77;">عرض الخيارات دون تحيّز</div>
+  </div>
+  <div style="background:#EEF8F8;border-radius:12px;padding:18px 14px;text-align:center;border:1.5px solid rgba(46,196,182,.15);">
+    <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:#17252A;margin-bottom:5px;">التمكين</div>
+    <div style="font-size:12px;color:#3B7A77;">فهم الذات قبل التخصص</div>
+  </div>
+  <div style="background:#EEF8F8;border-radius:12px;padding:18px 14px;text-align:center;border:1.5px solid rgba(46,196,182,.15);">
+    <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:#17252A;margin-bottom:5px;">الابتكار</div>
+    <div style="font-size:12px;color:#3B7A77;">AI في خدمة التعليم</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-    st.markdown('<hr class="divider">', unsafe_allow_html=True)
-    st.markdown('<div class="section-tag">تواصل</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-h-sm" style="margin-bottom:18px;">تواصل معنا</div>', unsafe_allow_html=True)
+    divider()
+    section_tag("تواصل")
+    section_h_sm("تواصل معنا")
     ca, cb = st.columns(2)
     with ca:
         st.text_input("الاسم",             placeholder="اكتب اسمك")
@@ -743,4 +724,4 @@ elif st.session_state.page == "من نحن":
     if st.button("إرسال", use_container_width=True):
         st.success("تم الاستلام. شكراً لتواصلك.")
     st.caption("للتعاون والشراكات مع الجهات التعليمية والمبادرات المجتمعية.")
-    st.markdown('</div>', unsafe_allow_html=True)
+    page_end()
