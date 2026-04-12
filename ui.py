@@ -75,8 +75,9 @@ def page_home(unis_raw, progs_raw, N_UNIS, N_PROGS, N_CTRY):
     st.markdown(f"""
 <div style="
   text-align:center;
-  padding:56px 36px 40px;
+  padding:52px 36px 40px;
   direction:rtl;
+  overflow:visible;
 ">
   <div style="
     display:inline-flex;align-items:center;gap:8px;
@@ -85,9 +86,9 @@ def page_home(unis_raw, progs_raw, N_UNIS, N_PROGS, N_CTRY):
     border-radius:100px;
     padding:6px 18px;
     font-size:12px;font-weight:700;
-    letter-spacing:2px;text-transform:uppercase;
+    letter-spacing:1.5px;text-transform:uppercase;
     color:#1B4F4A;
-    margin-bottom:26px;
+    margin-bottom:28px;
   ">
     <span style="width:5px;height:5px;border-radius:50%;background:#2EC4B6;display:inline-block;"></span>
     الدليل الذكي للتعليم العالي الخليجي
@@ -95,16 +96,19 @@ def page_home(unis_raw, progs_raw, N_UNIS, N_PROGS, N_CTRY):
 
   <div style="
     font-family:'Syne',sans-serif;
-    font-size:72px;font-weight:800;
+    font-size:68px;font-weight:800;
     color:#1B4F4A;
-    line-height:.92;letter-spacing:-4px;
-    margin-bottom:22px;
+    line-height:1.15;
+    letter-spacing:-2px;
+    margin-bottom:20px;
+    padding-top:6px;
+    overflow:visible;
   ">بوصلة</div>
 
   <div style="
     width:48px;height:4px;
     background:#2EC4B6;border-radius:2px;
-    margin:0 auto 24px;
+    margin:0 auto 22px;
   "></div>
 
   <div style="
