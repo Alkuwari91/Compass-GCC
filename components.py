@@ -456,6 +456,83 @@ div[data-baseweb="popover"] li:hover {{
   color: #17252A !important;
 }}
 
+/* ══════════════════════════════════════════
+   RTL TEXT ALIGNMENT — COMPREHENSIVE FIX
+   يُصحح كل النصوص العربية داخل Streamlit
+   ══════════════════════════════════════════ */
+
+/* 1. كل الـ markdown containers */
+[data-testid="stMarkdownContainer"],
+[data-testid="stMarkdownContainer"] *,
+.stMarkdown,
+.stMarkdown * {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 2. الفقرات والنصوص في كل مكان */
+[data-testid="stMainBlockContainer"] p,
+[data-testid="stMainBlockContainer"] li,
+[data-testid="stMainBlockContainer"] span:not(.baw-tag):not(.baw-chip):not(.t-overline),
+[data-testid="stMainBlockContainer"] div:not([class*="plot"]):not([class*="js-"]) > p {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 3. element-container wrapper */
+.element-container,
+.element-container > div {{
+  direction: rtl !important;
+}}
+
+/* 4. نصوص داخل الـ tab panels */
+div[data-testid="stTabsContent"],
+div[data-testid="stTabsContent"] p,
+div[data-testid="stTabsContent"] li,
+div[data-testid="stTabsContent"] [data-testid="stMarkdownContainer"] {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 5. النصوص داخل stVerticalBlock */
+[data-testid="stVerticalBlock"] p,
+[data-testid="stVerticalBlock"] [data-testid="stMarkdownContainer"],
+[data-testid="stVerticalBlock"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stVerticalBlock"] [data-testid="stMarkdownContainer"] li {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 6. نصوص داخل columns */
+[data-testid="column"] p,
+[data-testid="column"] [data-testid="stMarkdownContainer"],
+[data-testid="column"] [data-testid="stMarkdownContainer"] p {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 7. chat messages */
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 8. success / info / warning / error messages */
+[data-testid="stAlert"] p,
+[data-testid="stAlert"] {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
+/* 9. captions */
+[data-testid="stCaptionContainer"],
+[data-testid="stCaptionContainer"] p {{
+  direction: rtl !important;
+  text-align: right !important;
+}}
+
 /* ── Expanders ───────────────────────────── */
 div[data-testid="stExpander"] {{
   background: {C["white"]} !important;
@@ -463,17 +540,34 @@ div[data-testid="stExpander"] {{
   border-radius: 12px !important;
   margin-bottom: 8px !important;
   overflow: hidden !important;
+  direction: rtl !important;
 }}
+div[data-testid="stExpander"] details > summary,
 div[data-testid="stExpander"] details > summary p {{
   font-weight: 700 !important;
   color: {C["ink"]} !important;
   font-size: 15px !important;
+  direction: rtl !important;
+  text-align: right !important;
 }}
 div[data-testid="stExpander"] details > div {{
   color: {C["muted"]} !important;
   line-height: 1.85 !important;
   font-size: 15px !important;
   padding: 4px 0 8px !important;
+  direction: rtl !important;
+  text-align: right !important;
+}}
+div[data-testid="stExpander"] details > div p,
+div[data-testid="stExpander"] details > div li,
+div[data-testid="stExpander"] [data-testid="stMarkdownContainer"],
+div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] p,
+div[data-testid="stExpander"] [data-testid="stMarkdownContainer"] li {{
+  direction: rtl !important;
+  text-align: right !important;
+  color: {C["muted"]} !important;
+  font-size: 15px !important;
+  line-height: 1.85 !important;
 }}
 
 /* ── Chat ────────────────────────────────── */
