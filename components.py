@@ -462,7 +462,7 @@ div[data-baseweb="popover"] li:hover {{
    يُصحح كل النصوص العربية داخل Streamlit
    ══════════════════════════════════════════ */
 
-/* 1. كل الـ markdown containers */
+/* 1. كل الـ markdown containers — RTL right-aligned للفقرات */
 [data-testid="stMarkdownContainer"],
 [data-testid="stMarkdownContainer"] *,
 .stMarkdown,
@@ -486,27 +486,24 @@ div[data-baseweb="popover"] li:hover {{
   direction: rtl !important;
 }}
 
-/* 4. نصوص داخل الـ tab panels */
-div[data-testid="stTabsContent"],
+/* 4. نصوص داخل الـ tab panels — فقرات RTL */
 div[data-testid="stTabsContent"] p,
 div[data-testid="stTabsContent"] li,
-div[data-testid="stTabsContent"] [data-testid="stMarkdownContainer"] {{
+div[data-testid="stTabsContent"] [data-testid="stMarkdownContainer"] p {{
   direction: rtl !important;
   text-align: right !important;
 }}
 
-/* 5. النصوص داخل stVerticalBlock */
+/* 5. النصوص داخل stVerticalBlock — فقرات RTL */
 [data-testid="stVerticalBlock"] p,
-[data-testid="stVerticalBlock"] [data-testid="stMarkdownContainer"],
 [data-testid="stVerticalBlock"] [data-testid="stMarkdownContainer"] p,
 [data-testid="stVerticalBlock"] [data-testid="stMarkdownContainer"] li {{
   direction: rtl !important;
   text-align: right !important;
 }}
 
-/* 6. نصوص داخل columns */
+/* 6. نصوص داخل columns — فقرات RTL */
 [data-testid="column"] p,
-[data-testid="column"] [data-testid="stMarkdownContainer"],
 [data-testid="column"] [data-testid="stMarkdownContainer"] p {{
   direction: rtl !important;
   text-align: right !important;
@@ -514,7 +511,6 @@ div[data-testid="stTabsContent"] [data-testid="stMarkdownContainer"] {{
 
 /* 7. chat messages */
 [data-testid="stChatMessage"] p,
-[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {{
   direction: rtl !important;
   text-align: right !important;
@@ -532,6 +528,51 @@ div[data-testid="stTabsContent"] [data-testid="stMarkdownContainer"] {{
 [data-testid="stCaptionContainer"] p {{
   direction: rtl !important;
   text-align: right !important;
+}}
+
+/* ══════════════════════════════════════════
+   CENTERED HEADINGS — استثناءات العناوين
+   تتغلب على قواعد RTL العامة أعلاه
+   ══════════════════════════════════════════ */
+
+/* العنوان الأخضر الصغير — centered دائماً */
+.t-overline,
+[data-testid="stMarkdownContainer"] .t-overline,
+[data-testid="stVerticalBlock"] .t-overline {{
+  text-align: center !important;
+  direction: rtl !important;
+}}
+
+/* العنوان الكبير h1 — centered دائماً */
+.t-h1,
+[data-testid="stMarkdownContainer"] .t-h1,
+[data-testid="stVerticalBlock"] .t-h1,
+[data-testid="stTabsContent"] .t-h1 {{
+  text-align: center !important;
+  direction: rtl !important;
+}}
+
+/* العنوان المتوسط h2 — centered دائماً */
+.t-h2,
+[data-testid="stMarkdownContainer"] .t-h2,
+[data-testid="stVerticalBlock"] .t-h2,
+[data-testid="stTabsContent"] .t-h2 {{
+  text-align: center !important;
+  direction: rtl !important;
+}}
+
+/* ── Section wrapper: متوازن بصرياً ─────── */
+.baw-section-wrap {{
+  max-width: 680px;
+  margin-inline: auto;
+  padding-inline: 0;
+}}
+
+/* ── Headings inside stMarkdown: centered override ── */
+[data-testid="stMarkdownContainer"] div.t-h1,
+[data-testid="stMarkdownContainer"] div.t-h2,
+[data-testid="stMarkdownContainer"] div.t-overline {{
+  text-align: center !important;
 }}
 
 /* ── Expanders ───────────────────────────── */
@@ -637,9 +678,10 @@ def render_header():
 <div style="
   background:{C['white']};
   border-bottom:2px solid {C['border']};
-  padding:22px 36px 18px;
+  padding:32px 36px 24px;
   text-align:center;
   direction:rtl;
+  overflow:visible;
 ">
   <div style="
     font-family:'Syne',sans-serif;
@@ -647,35 +689,51 @@ def render_header():
     font-weight:800;
     color:{C['primary']};
     letter-spacing:-1px;
-    line-height:1;
-    margin-bottom:6px;
+    line-height:1.3;
+    margin-bottom:8px;
+    padding-top:4px;
   ">بوصلة</div>
   <div style="
     font-size:14px;
     color:{C['muted']};
     font-weight:500;
     letter-spacing:.3px;
+    line-height:1.6;
   ">الدليل الذكي للتعليم العالي في دول مجلس التعاون الخليجي</div>
 </div>
 """, unsafe_allow_html=True)
 
 
 def section_header(overline: str = "", title: str = "", subtitle: str = ""):
-    html = ""
+    """
+    عنوان القسم — overline + title في المنتصف دائماً
+    subtitle: right-aligned للعربية
+    """
+    parts = ""
     if overline:
-        html += f'<div class="t-overline">{overline}</div>'
+        parts += f'<div class="t-overline">{overline}</div>'
     if title:
-        align = "text-align:center;" if overline else "text-align:right;"
-        html += f'<div class="t-h1" style="{align}">{title}</div>'
+        parts += f'<div class="t-h1">{title}</div>'
     if subtitle:
-        align = "text-align:center;" if overline else "text-align:right;"
-        html += f'<div class="t-body" style="margin-top:8px;margin-bottom:4px;{align}">{subtitle}</div>'
-    if html:
-        st.markdown(html, unsafe_allow_html=True)
+        parts += f'<div class="t-body" style="text-align:right;margin-top:10px;">{subtitle}</div>'
+
+    if parts:
+        # wrapper خارجي يضمن التوسيط البصري الحقيقي
+        # text-align:center يضمن توسيط الأبناء block
+        # ثم كل عنصر عنده class خاص يُطبّق عليه CSS بتغلب على RTL العام
+        st.markdown(f"""
+<div style="
+  text-align:center;
+  direction:rtl;
+  margin-bottom:24px;
+  padding-inline:0;
+">
+  {parts}
+</div>""", unsafe_allow_html=True)
 
 
 def h2(text: str):
-    st.markdown(f'<div class="t-h2">{text}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="t-h2" style="text-align:center;">{text}</div>', unsafe_allow_html=True)
 
 
 def divider():
