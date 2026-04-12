@@ -73,13 +73,14 @@ label {{
 
 /* ── Typography ──────────────────────────── */
 .t-overline {{
-  font-size: 12px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  letter-spacing: .5px;
   color: {C["teal"]};
   display: block;
+  text-align: center !important;
   margin-bottom: 10px;
+  margin-top: 4px;
 }}
 .t-h1 {{
   font-family: 'Syne', sans-serif;
@@ -662,11 +663,13 @@ def render_header():
 def section_header(overline: str = "", title: str = "", subtitle: str = ""):
     html = ""
     if overline:
-        html += f'<span class="t-overline">{overline}</span>'
+        html += f'<div class="t-overline">{overline}</div>'
     if title:
-        html += f'<div class="t-h1">{title}</div>'
+        align = "text-align:center;" if overline else "text-align:right;"
+        html += f'<div class="t-h1" style="{align}">{title}</div>'
     if subtitle:
-        html += f'<div class="t-body" style="margin-top:8px;margin-bottom:4px;">{subtitle}</div>'
+        align = "text-align:center;" if overline else "text-align:right;"
+        html += f'<div class="t-body" style="margin-top:8px;margin-bottom:4px;{align}">{subtitle}</div>'
     if html:
         st.markdown(html, unsafe_allow_html=True)
 
