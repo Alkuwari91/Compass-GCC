@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوصلة — الدليل الذكي للتعليم الخليجي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── Variables ── */
+:root {
+  --blue:     rgba(129,174,217,1);
+  --blue-hex: #81AED9;
+  --black:    #333333;
+  --gray:     rgba(156,156,156,0.47);
+  --white:    #F5F5F3;
+  --error:    #DB261B;
+  --nav-bg:   #1D2D44;
+  --sec-bg:   #2D4060;
+  --light:    #E3EEF7;
+  --muted:    #6B7F96;
+  --border:   rgba(51,51,51,.12);
+  --pure:     #ffffff;
+}
+
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{overflow-x:hidden;background:var(--white);color:var(--black);
+  font-family:'IBM Plex Sans Arabic',sans-serif;direction:rtl;}
+a{text-decoration:none;}
+input,textarea,select{font-family:inherit;direction:rtl;text-align:right;}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:rgba(129,174,217,.35);border-radius:0;}
+
+/* ── NAV ── */
+nav{
+  background:var(--nav-bg);
+  display:flex;align-items:center;
+  padding:0 80px;height:60px;gap:0;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Syne',sans-serif;font-size:21px;font-weight:800;
+  color:#fff;letter-spacing:-.5px;white-space:nowrap;margin-left:auto;
+  flex-shrink:0;
+}
+.nav-logo span{color:var(--blue-hex);}
+.nav-links{display:flex;align-items:center;margin-right:auto;}
+.nav-btn{
+  background:transparent;border:none;cursor:pointer;
+  color:rgba(227,238,247,.55);font-family:'IBM Plex Sans Arabic',sans-serif;
+  font-size:13.5px;font-weight:400;padding:0 14px;height:60px;
+  border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap;
+}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.05);}
+.nav-btn.active{color:#fff;font-weight:600;border-bottom-color:var(--blue-hex);}
+
+/* ── Page container ── */
+.page{display:none;max-width:1240px;margin:0 auto;padding:0 80px;}
+.page.active{display:block;}
+
+/* ── Full-width band helper ── */
+.band{margin:0 -80px;padding:0 80px;}
+
+/* ── Hero ── */
+.hero{
+  background:var(--nav-bg);
+  padding:100px 80px 80px;margin:0 -80px;
+  text-align:center;overflow:hidden;
+}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue-hex);margin-bottom:20px;}
+.hero-title{font-family:'Syne',sans-serif;font-size:72px;font-weight:800;
+  color:#fff;line-height:.95;letter-spacing:-3.5px;margin-bottom:18px;}
+.hero-title span{color:var(--blue-hex);}
+.hero-divider{width:44px;height:3px;background:var(--blue-hex);margin:0 auto 22px;}
+.hero-sub{font-size:16px;color:rgba(227,238,247,.75);line-height:1.9;
+  max-width:480px;margin:0 auto 52px;}
+.hero-stats{display:inline-flex;border:1px solid rgba(227,238,247,.2);}
+.hero-stat{padding:22px 36px;text-align:center;border-left:1px solid rgba(227,238,247,.2);}
+.hero-stat:last-child{border-left:none;}
+.hero-stat-n{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:#fff;}
+.hero-stat-l{font-size:12px;color:rgba(227,238,247,.55);margin-top:5px;letter-spacing:.5px;}
+
+/* ── Section helpers ── */
+.v-space-60{height:60px;}
+.v-space-40{height:40px;}
+.v-space-28{height:28px;}
+.v-space-16{height:16px;}
+.v-space-8{height:8px;}
+.section-tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue-hex);margin-bottom:10px;text-align:right;}
+.section-h{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  color:var(--black);margin-bottom:24px;text-align:right;line-height:1.3;letter-spacing:-.5px;}
+.section-h-sm{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  color:var(--black);margin-bottom:16px;text-align:right;letter-spacing:-.3px;}
+.hr{height:1px;background:var(--border);margin:44px 0;}
+
+/* ── Page header band ── */
+.page-header{
+  background:var(--nav-bg);margin:0 -80px;padding:64px 80px 56px;direction:rtl;overflow:hidden;
+}
+.page-header .tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue-hex);margin-bottom:12px;}
+.page-header h1{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;
+  color:#fff;margin:0;line-height:1.15;letter-spacing:-1px;}
+.page-header p{font-size:15px;color:rgba(227,238,247,.7);margin-top:10px;}
+
+/* ── Cards grid ── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+
+/* ── Service card ── */
+.svc-card{
+  background:var(--pure);border:1px solid var(--border);
+  border-top:3px solid var(--nav-bg);padding:28px 24px;min-height:160px;
+}
+.svc-card h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;
+  color:var(--black);margin-bottom:12px;text-align:right;}
+.svc-card p{font-size:13.5px;color:var(--muted);line-height:1.85;text-align:right;margin:0 0 20px;}
+.svc-card .card-btn{
+  display:block;width:100%;padding:10px;text-align:center;
+  background:transparent;border:1.5px solid var(--border);
+  color:var(--black);font-family:inherit;font-size:14px;font-weight:600;
+  cursor:pointer;border-radius:2px;transition:all .18s;
+}
+.svc-card .card-btn:hover{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* ── Vision band ── */
+.vision-band{
+  background:var(--light);margin:0 -80px;padding:72px 80px 64px;
+}
+.vision-band .inner-tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px;text-align:right;}
+.vision-band h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  color:var(--nav-bg);margin-bottom:40px;text-align:right;letter-spacing:-.5px;}
+.vision-card{background:var(--pure);padding:28px 22px;border-top:3px solid var(--nav-bg);}
+.vision-card.teal{border-top-color:var(--blue-hex);}
+.vision-card-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  color:var(--nav-bg);margin-bottom:12px;text-align:right;}
+.vision-card-body{font-size:13.5px;color:var(--muted);line-height:1.85;text-align:right;}
+
+/* ── Buttons ── */
+.btn{
+  background:transparent;border:1.5px solid var(--border);color:var(--black);
+  border-radius:2px;font-size:14px;font-weight:600;padding:10px 22px;
+  letter-spacing:.2px;transition:all .18s;cursor:pointer;font-family:inherit;
+}
+.btn:hover{background:var(--black);border-color:var(--black);color:var(--white);}
+.btn-full{width:100%;padding:11px;}
+.btn-primary{background:var(--nav-bg);border-color:var(--nav-bg);color:#fff;}
+.btn-primary:hover{background:var(--sec-bg);border-color:var(--sec-bg);}
+.back-btn{margin:28px 0 8px;display:inline-flex;align-items:center;gap:8px;}
+
+/* ── Inputs ── */
+.inp{
+  width:100%;padding:10px 14px;background:var(--pure);border:1px solid var(--border);
+  border-radius:3px;font-size:14px;color:var(--black);font-family:inherit;
+  transition:border-color .18s,box-shadow .18s;
+}
+.inp:focus{outline:none;border-color:var(--blue-hex);box-shadow:0 0 0 2px rgba(129,174,217,.15);}
+.inp::placeholder{color:#9BAFBF;}
+label.lbl{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:6px;}
+.select-wrap select{appearance:none;-webkit-appearance:none;}
+
+/* ── Filters row ── */
+.filters{display:grid;grid-template-columns:1.5fr 1fr 1fr 1.5fr 1fr;gap:12px;margin:16px 0;}
+
+/* ── Uni result row ── */
+.uni-row{
+  background:var(--pure);border-bottom:1px solid var(--border);
+  padding:18px 0;display:flex;justify-content:space-between;
+  align-items:center;gap:16px;
+}
+.uni-row-name{font-size:14.5px;font-weight:700;color:var(--black);margin-bottom:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.uni-row-name span{font-weight:400;color:#9BAFBF;font-size:12.5px;}
+.uni-row-loc{font-size:12.5px;color:#9BAFBF;margin-bottom:10px;}
+.uni-row-links{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tag-pill{display:inline-block;padding:2px 10px;font-size:11px;font-weight:600;}
+.tag-pub{background:rgba(29,45,68,.08);color:var(--muted);}
+.tag-priv{background:rgba(29,45,68,.05);color:var(--black);}
+.tag-sch{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;}
+.tag-lang{background:rgba(129,174,217,.12);color:var(--muted);}
+.link-btn{
+  font-size:12.5px;font-weight:600;color:var(--blue-hex);padding:5px 14px;
+  border:1px solid rgba(129,174,217,.35);white-space:nowrap;
+  background:transparent;transition:all .18s;cursor:pointer;
+  display:inline-block;
+}
+.link-btn:hover{background:var(--blue-hex);color:#fff;}
+.link-btn.muted{color:var(--muted);border-color:var(--border);}
+.link-btn.muted:hover{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* ── Search empty state ── */
+.empty-state{text-align:center;padding:80px 0;color:var(--muted);}
+.empty-state .icon{font-size:40px;margin-bottom:16px;}
+.empty-state p{font-size:16px;font-weight:600;margin-bottom:6px;}
+.empty-state small{font-size:13.5px;color:#9BAFBF;}
+
+/* ── Comparison ── */
+.comp-grid{display:grid;gap:16px;}
+.comp-card{background:var(--pure);border:1px solid var(--border);border-top:3px solid var(--nav-bg);padding:22px 20px;}
+.comp-card-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;
+  color:var(--black);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.comp-card-loc{font-size:13px;color:#9BAFBF;margin-bottom:4px;}
+.comp-row{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--border);}
+.comp-row:first-of-type{border-top:none;}
+.comp-label{font-size:12px;color:var(--muted);}
+.comp-val{font-size:13px;font-weight:600;max-width:55%;text-align:left;overflow:hidden;text-overflow:ellipsis;}
+.comp-link{display:block;width:100%;margin-top:8px;padding:8px;text-align:center;
+  border:1.5px solid var(--border);background:transparent;color:var(--muted);
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;}
+.comp-link:hover{background:var(--black);color:var(--white);border-color:var(--black);}
+
+/* ── Multiselect dropdown ── */
+.ms-wrap{position:relative;}
+.ms-input{width:100%;padding:10px 14px;background:var(--pure);border:1px solid var(--border);
+  border-radius:3px;font-size:14px;color:var(--black);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.ms-input:focus-within{border-color:var(--blue-hex);}
+.ms-dropdown{position:absolute;top:100%;right:0;left:0;background:var(--pure);
+  border:1px solid var(--border);max-height:280px;overflow-y:auto;z-index:50;display:none;}
+.ms-dropdown.open{display:block;}
+.ms-option{padding:10px 14px;cursor:pointer;font-size:13.5px;display:flex;
+  align-items:center;gap:10px;transition:background .12s;}
+.ms-option:hover{background:var(--light);}
+.ms-option.selected{background:rgba(129,174,217,.12);}
+.ms-option input[type=checkbox]{accent-color:var(--blue-hex);}
+.ms-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.ms-tag{background:rgba(129,174,217,.15);color:var(--nav-bg);padding:4px 10px;
+  font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;}
+.ms-tag button{background:none;border:none;cursor:pointer;font-size:14px;
+  color:var(--muted);line-height:1;}
+
+/* ── AI box ── */
+.ai-box{background:var(--light);border-top:2px solid var(--blue-hex);
+  padding:22px 24px;margin-top:16px;line-height:2;color:var(--black);direction:rtl;}
+.ai-box .ai-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--blue-hex);display:block;margin-bottom:10px;}
+
+/* ── Chat ── */
+.chat-wrap{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;max-height:480px;overflow-y:auto;padding:4px;}
+.chat-msg{display:flex;gap:10px;align-items:flex-start;direction:rtl;}
+.chat-msg.user{flex-direction:row-reverse;}
+.chat-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;background:var(--light);}
+.chat-msg.user .chat-avatar{background:var(--nav-bg);}
+.chat-bubble{background:var(--pure);border:1px solid var(--border);padding:14px 16px;
+  border-radius:3px;max-width:80%;font-size:14px;line-height:1.85;color:var(--black);}
+.chat-msg.user .chat-bubble{background:var(--nav-bg);color:#fff;border-color:var(--nav-bg);}
+.chat-input-row{display:flex;gap:10px;align-items:center;}
+.chat-input-row .inp{flex:1;}
+
+/* ── Stats band ── */
+.stats-band{background:var(--light);margin:0 -80px;padding:0 80px;direction:rtl;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(29,45,68,.08);}
+.stat-cell{padding:32px 0;text-align:center;border-left:1px solid rgba(29,45,68,.08);}
+.stat-cell:last-child{border-left:none;}
+.stat-n{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--nav-bg);line-height:1;}
+.stat-l{font-size:12.5px;color:var(--muted);margin-top:6px;letter-spacing:.3px;}
+
+/* ── Charts ── */
+.chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:28px 0;}
+.chart-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin:28px 0;}
+.chart-box{background:var(--pure);border:1px solid var(--border);padding:20px;min-height:280px;display:flex;flex-direction:column;}
+.chart-box canvas{flex:1;}
+
+/* ── About page ── */
+.about-band{background:var(--light);margin:0 -80px;padding:72px 80px 64px;}
+.about-band p{font-size:15.5px;color:var(--muted);line-height:1.95;text-align:right;max-width:680px;margin-right:auto;margin-top:16px;}
+.about-band p.lead{font-size:19px;font-weight:700;color:var(--nav-bg);margin-top:0;}
+.dark-band{background:var(--nav-bg);margin:0 -80px;padding:72px 80px 64px;}
+.dark-band .tag{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue-hex);margin-bottom:12px;text-align:right;}
+.dark-band h2{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  color:#fff;margin-bottom:40px;text-align:right;letter-spacing:-.5px;}
+.val-card{background:rgba(255,255,255,.05);padding:24px 18px;border-top:2px solid var(--blue-hex);}
+.val-card h4{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;
+  margin-bottom:8px;text-align:right;}
+.val-card p{font-size:13px;color:rgba(227,238,247,.65);text-align:right;}
+
+/* ── Contact ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;}
+textarea.inp{resize:vertical;min-height:114px;}
+
+/* ── Gauge fake ── */
+.gauge-wrap{text-align:center;padding:20px 0;}
+.gauge-num{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--nav-bg);}
+.gauge-label{font-size:13px;color:var(--muted);margin-top:6px;}
+
+/* ── Quick match cards ── */
+.qm-card{background:var(--pure);border:1px solid var(--border);border-top:3px solid var(--nav-bg);padding:20px;}
+.qm-name{font-size:14.5px;font-weight:700;color:var(--black);margin-bottom:4px;}
+.qm-loc{font-size:12px;color:#9BAFBF;margin-bottom:10px;}
+.qm-reason{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:12px;}
+
+/* ── Responsive tweaks ── */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .page{padding:0 20px;}
+  .band,.hero,.page-header,.vision-band,.about-band,.dark-band,.stats-band{margin:0 -20px;padding-left:20px;padding-right:20px;}
+  .hero .hero-title{font-size:44px;}
+  .grid-3,.grid-4,.chart-grid{grid-template-columns:1fr;}
+  .chart-grid-2,.grid-2,.contact-grid{grid-template-columns:1fr;}
+  .filters{grid-template-columns:1fr 1fr;}
+  .hero-stats{flex-direction:column;display:flex;}
+  .hero-stat{border-left:none;border-bottom:1px solid rgba(227,238,247,.2);}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="nav-logo">بو<span>صلة</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="gotoPage('home',this)">الرئيسية</button>
+    <button class="nav-btn" onclick="gotoPage('search',this)">بحث الجامعات</button>
+    <button class="nav-btn" onclick="gotoPage('compare',this)">المقارنة</button>
+    <button class="nav-btn" onclick="gotoPage('rushd',this)">رُشد</button>
+    <button class="nav-btn" onclick="gotoPage('data',this)">البيانات</button>
+    <button class="nav-btn" onclick="gotoPage('about',this)">من نحن</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     PAGE: الرئيسية
+═══════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">الدليل الذكي للتعليم الخليجي</div>
+    <div class="hero-title">بو<span>صلة</span></div>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">اكتشف الجامعات، قارن التخصصات، واتخذ قرارك التعليمي بثقة مع مستشار ذكي يتحدث العربية</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n" id="stat-unis">58+</div><div class="hero-stat-l">جامعة</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">6</div><div class="hero-stat-l">دولة خليجية</div></div>
+      <div class="hero-stat"><div class="hero-stat-n" id="stat-progs">119+</div><div class="hero-stat-l">برنامج</div></div>
+      <div class="hero-stat"><div class="hero-stat-n" id="stat-sch">55</div><div class="hero-stat-l">منحة متاحة</div></div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div style="max-width:1240px;margin:0 auto;padding:0 80px;">
+    <div class="v-space-60"></div>
+    <div class="section-tag">خدماتنا</div>
+    <div class="section-h">اختر ما يناسبك</div>
+    <div class="grid-3">
+      <div class="svc-card">
+        <h3>بحث الجامعات</h3>
+        <p>ابحث في قاعدة بيانات الجامعات الخليجية وصفّ النتائج حسب الدولة والتخصص والمنح.</p>
+        <button class="card-btn" onclick="gotoPage('search')">انتقل ←</button>
+      </div>
+      <div class="svc-card">
+        <h3>مقارنة الجامعات</h3>
+        <p>قارن بين ٢ إلى ٤ جامعات جنباً إلى جنب — المنح، الترتيب، والروابط الرسمية.</p>
+        <button class="card-btn" onclick="gotoPage('compare')">انتقل ←</button>
+      </div>
+      <div class="svc-card">
+        <h3>رُشد — المستشار الذكي</h3>
+        <p>تحدّث بالعربية مع مستشار AI يرشّح الجامعات المناسبة ويشرح كل توصية.</p>
+        <button class="card-btn" onclick="gotoPage('rushd')">انتقل ←</button>
+      </div>
+    </div>
+    <div class="v-space-16"></div>
+    <div class="grid-3">
+      <div class="svc-card">
+        <h3>لوحة البيانات</h3>
+        <p>مخططات تفاعلية وتقارير إحصائية شاملة عن التعليم العالي في دول الخليج.</p>
+        <button class="card-btn" onclick="gotoPage('data')">انتقل ←</button>
+      </div>
+      <div class="svc-card">
+        <h3>من نحن</h3>
+        <p>تعرّف على منصة بوصلة ورؤيتها ورسالتها وقيمها.</p>
+        <button class="card-btn" onclick="gotoPage('about')">انتقل ←</button>
+      </div>
+    </div>
+    <div class="v-space-60"></div>
+  </div>
+
+  <!-- Vision band -->
+  <div class="vision-band">
+    <div class="inner-tag">هويتنا</div>
+    <h2>رؤيتنا ورسالتنا وقيمنا</h2>
+    <div class="grid-3">
+      <div class="vision-card">
+        <div class="vision-card-title">رؤيتنا</div>
+        <div class="vision-card-body">إعادة تعريف تجربة اختيار التعليم في الخليج — منصة ذكية توجّه الشباب نحو مستقبلهم بثقة.</div>
+      </div>
+      <div class="vision-card">
+        <div class="vision-card-title">رسالتنا</div>
+        <div class="vision-card-body">تمكين الطلبة من اتخاذ قرارات تعليمية دقيقة باستخدام الذكاء الاصطناعي والبيانات الموثوقة.</div>
+      </div>
+      <div class="vision-card teal">
+        <div class="vision-card-title">قيمنا</div>
+        <div class="vision-card-body">الوضوح · العدالة · التمكين · الابتكار · الموثوقية</div>
+      </div>
+    </div>
+  </div>
+  <div style="height:56px;"></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE: بحث الجامعات
+═══════════════════════════════════════════ -->
+<div class="page" id="page-search">
+  <div class="page-header">
+    <div class="tag">الاستكشاف</div>
+    <h1>بحث الجامعات</h1>
+  </div>
+  <div style="max-width:1240px;margin:0 auto;padding:0 80px;">
+    <div class="v-space-28"></div>
+    <button class="btn back-btn" onclick="gotoPage('home')">← الرئيسية</button>
+    <div class="v-space-8"></div>
+    <input type="text" class="inp" id="search-q" placeholder="ابحث عن جامعة، مدينة، أو دولة..." oninput="renderSearch()">
+    <div class="filters">
+      <div>
+        <label class="lbl">الدولة</label>
+        <select class="inp" id="f-country" onchange="renderSearch()">
+          <option value="">الكل</option>
+          <option>Qatar</option><option>Saudi Arabia</option><option>UAE</option>
+          <option>Kuwait</option><option>Bahrain</option><option>Oman</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">النوع</label>
+        <select class="inp" id="f-type" onchange="renderSearch()">
+          <option value="">الكل</option><option>Public</option><option>Private</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">المرحلة</label>
+        <select class="inp" id="f-level" onchange="renderSearch()">
+          <option value="">الكل</option>
+          <option>Diploma</option><option>Bachelor</option><option>Master</option><option>PhD</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">التخصص</label>
+        <select class="inp" id="f-major" onchange="renderSearch()">
+          <option value="">الكل</option>
+          <option>Artificial Intelligence</option><option>Cybersecurity</option>
+          <option>Engineering</option><option>Medicine</option><option>Pharmacy</option>
+          <option>Computer Science</option><option>Business Administration</option>
+          <option>Information Technology</option><option>Economics</option>
+          <option>Education</option><option>Data Science</option><option>Health Sciences</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">المنح</label>
+        <select class="inp" id="f-sch" onchange="renderSearch()">
+          <option value="">الكل</option><option value="yes">متاحة</option><option value="no">غير متاحة</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="search-results">
+      <div class="empty-state">
+        <div class="icon">🔍</div>
+        <p>ابحث للبدء</p>
+        <small>اكتب اسم جامعة أو دولة، أو استخدم الفلاتر أعلاه</small>
+      </div>
+    </div>
+    <div style="height:56px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE: المقارنة
+═══════════════════════════════════════════ -->
+<div class="page" id="page-compare">
+  <div class="page-header">
+    <div class="tag">التقييم المقارن</div>
+    <h1>مقارنة الجامعات</h1>
+  </div>
+  <div style="max-width:1240px;margin:0 auto;padding:0 80px;">
+    <div class="v-space-28"></div>
+    <button class="btn back-btn" onclick="gotoPage('home')">← الرئيسية</button>
+    <div class="v-space-16"></div>
+    <label class="lbl">اختر من ٢ إلى ٤ جامعات</label>
+    <div class="ms-wrap">
+      <div class="ms-input" id="ms-trigger" onclick="toggleMsDropdown()">
+        <span id="ms-placeholder">اختر جامعات...</span>
+        <span>▾</span>
+      </div>
+      <div class="ms-dropdown" id="ms-dropdown"></div>
+    </div>
+    <div class="ms-tags" id="ms-tags"></div>
+    <div class="v-space-28"></div>
+    <div id="comp-grid"></div>
+
+    <div id="comp-programs-section" style="display:none;">
+      <div class="hr"></div>
+      <div class="section-h-sm">البرامج المتاحة</div>
+      <div id="comp-programs-table"></div>
+    </div>
+    <div style="height:56px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE: رُشد
+═══════════════════════════════════════════ -->
+<div class="page" id="page-rushd">
+  <div class="page-header">
+    <div class="tag">المستشار الأكاديمي الذكي</div>
+    <h1>رُشد</h1>
+    <p>تحدّث بالعربية — رُشد يفهم ملفك ويرشّح الجامعات المناسبة</p>
+  </div>
+  <div style="max-width:1240px;margin:0 auto;padding:0 80px;">
+    <div class="v-space-28"></div>
+    <button class="btn back-btn" onclick="gotoPage('home')">← الرئيسية</button>
+    <div class="v-space-16"></div>
+
+    <!-- Quick match -->
+    <div class="section-h-sm">التحليل السريع</div>
+    <div class="grid-3" style="margin-bottom:12px;">
+      <div>
+        <label class="lbl">الدولة المفضلة</label>
+        <select class="inp" id="qm-country">
+          <option value="">الكل</option>
+          <option>Qatar</option><option>Saudi Arabia</option><option>UAE</option>
+          <option>Kuwait</option><option>Bahrain</option><option>Oman</option>
+        </select>
+      </div>
+      <div>
+        <label class="lbl">التخصص المطلوب</label>
+        <input type="text" class="inp" id="qm-major" placeholder="مثال: هندسة الحاسب">
+      </div>
+      <div>
+        <label class="lbl">درجة IELTS</label>
+        <input type="text" class="inp" id="qm-ielts" placeholder="مثال: 6.5">
+      </div>
+    </div>
+    <button class="btn btn-full" onclick="quickMatch()">حلّل بسرعة</button>
+    <div id="qm-results" style="margin-top:16px;"></div>
+
+    <div class="hr"></div>
+
+    <!-- Chat -->
+    <div class="chat-wrap" id="chat-wrap"></div>
+    <div class="chat-input-row">
+      <input type="text" class="inp" id="chat-input" placeholder="اكتب رسالتك..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn btn-primary" onclick="sendChat()">إرسال</button>
+    </div>
+    <div class="v-space-8"></div>
+    <button class="btn" onclick="resetChat()" id="new-chat-btn" style="display:none;">محادثة جديدة</button>
+    <div style="height:56px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE: البيانات
+═══════════════════════════════════════════ -->
+<div class="page" id="page-data">
+  <div class="page-header">
+    <div class="tag">الإحصاء والتحليل</div>
+    <h1>لوحة البيانات</h1>
+  </div>
+
+  <div class="stats-band">
+    <div class="stats-grid">
+      <div class="stat-cell"><div class="stat-n">58</div><div class="stat-l">إجمالي الجامعات</div></div>
+      <div class="stat-cell"><div class="stat-n">119</div><div class="stat-l">إجمالي البرامج</div></div>
+      <div class="stat-cell"><div class="stat-n">55</div><div class="stat-l">تقدم منحاً</div></div>
+      <div class="stat-cell"><div class="stat-n">6</div><div class="stat-l">دولة خليجية</div></div>
+    </div>
+  </div>
+
+  <div style="max-width:1240px;margin:0 auto;padding:0 80px;">
+    <div class="v-space-28"></div>
+    <button class="btn back-btn" onclick="gotoPage('home')">← الرئيسية</button>
+
+    <div class="chart-grid">
+      <div class="chart-box">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px;">الجامعات حسب الدولة</div>
+        <canvas id="chart-country"></canvas>
+      </div>
+      <div class="chart-box">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px;">حكومية / خاصة</div>
+        <canvas id="chart-type"></canvas>
+      </div>
+      <div class="chart-box">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px;">أبرز التخصصات</div>
+        <canvas id="chart-majors"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-grid-2">
+      <div class="chart-box" style="align-items:center;justify-content:center;">
+        <div class="gauge-wrap">
+          <div class="gauge-num">94.8%</div>
+          <div class="gauge-label">نسبة الجامعات التي تقدم منحاً</div>
+        </div>
+        <canvas id="chart-gauge" style="max-height:160px;"></canvas>
+      </div>
+      <div class="chart-box">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px;">لغات الدراسة</div>
+        <canvas id="chart-lang"></canvas>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <div class="section-h-sm">توزيع المنح حسب الدولة</div>
+    <div class="chart-box" style="min-height:320px;margin-bottom:40px;">
+      <canvas id="chart-sch-country"></canvas>
+    </div>
+
+    <div style="height:56px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE: من نحن
+═══════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="page-header">
+    <div class="tag">هويتنا</div>
+    <h1>من نحن</h1>
+  </div>
+
+  <div class="about-band">
+    <p class="lead">منصة رقمية ذكية لاتخاذ قرارات تعليمية مدروسة في دول مجلس التعاون الخليجي.</p>
+    <p>جاءت فكرة بوصلة استجابةً لتحدٍ واقعي — تشتّت المعلومات وصعوبة المقارنة بين الجامعات وتعدد المصادر غير الموثوقة.</p>
+    <p>نجمع البيانات التعليمية الخليجية ونقدّمها بطريقة مبسّطة، مع توظيف الذكاء الاصطناعي لمساعدة المستخدم على اتخاذ قراره بثقة.</p>
+  </div>
+
+  <div class="dark-band">
+    <div class="tag">قيمنا</div>
+    <h2>ما يحركنا</h2>
+    <div class="grid-4">
+      <div class="val-card"><h4>الوضوح</h4><p>تبسيط القرار التعليمي</p></div>
+      <div class="val-card"><h4>العدالة</h4><p>عرض الخيارات دون تحيّز</p></div>
+      <div class="val-card"><h4>التمكين</h4><p>فهم الذات قبل التخصص</p></div>
+      <div class="val-card"><h4>الابتكار</h4><p>AI في خدمة التعليم</p></div>
+    </div>
+  </div>
+
+  <div style="max-width:1240px;margin:0 auto;padding:0 80px;">
+    <div class="v-space-28"></div>
+    <button class="btn back-btn" onclick="gotoPage('home')">← الرئيسية</button>
+    <div class="v-space-16"></div>
+    <div class="section-tag">تواصل</div>
+    <div class="section-h">تواصل معنا</div>
+    <div class="contact-grid">
+      <div>
+        <label class="lbl">الاسم</label>
+        <input type="text" class="inp" placeholder="اكتب اسمك" style="margin-bottom:14px;">
+        <label class="lbl">البريد الإلكتروني</label>
+        <input type="email" class="inp" placeholder="example@email.com" dir="ltr" style="text-align:left;">
+      </div>
+      <div>
+        <label class="lbl">رسالتك</label>
+        <textarea class="inp" placeholder="اكتب رسالتك هنا..."></textarea>
+      </div>
+    </div>
+    <button class="btn btn-full btn-primary" onclick="submitContact()">إرسال</button>
+    <div id="contact-success" style="display:none;margin-top:12px;color:green;font-size:14px;font-weight:600;">
+      تم الاستلام. شكراً لتواصلك.
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:12px;text-align:right;">
+      للتعاون والشراكات مع الجهات التعليمية والمبادرات المجتمعية.
+    </p>
+    <div style="height:56px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+/* ─── DATA ─────────────────────────────────────── */
+const UNIS = [
+  {id:"qa_qu",ar:"جامعة قطر",en:"Qatar University",country:"Qatar",city:"Doha",type:"Public",web:"https://www.qu.edu.qa",adm:"https://www.qu.edu.qa/admissions",prog:"https://www.qu.edu.qa/programs",sch:"Local|GCC|International",sch_notes:"منح تنافسية ومساعدات/إعفاءات"},
+  {id:"qa_udst",ar:"جامعة الدوحة للعلوم والتكنولوجيا",en:"University of Doha for Science and Technology",country:"Qatar",city:"Doha",type:"Public",web:"https://www.udst.edu.qa",adm:"https://www.udst.edu.qa/admissions",prog:"https://www.udst.edu.qa/academics",sch:""},
+  {id:"qa_hbku",ar:"جامعة حمد بن خليفة",en:"Hamad Bin Khalifa University",country:"Qatar",city:"Doha",type:"Private",web:"https://www.hbku.edu.qa",adm:"https://www.hbku.edu.qa/en/admissions",prog:"https://www.hbku.edu.qa/en/academics",sch:"International",sch_notes:"منح/تمويل للدراسات العليا"},
+  {id:"qa_dohainst",ar:"معهد الدوحة للدراسات العليا",en:"Doha Institute for Graduate Studies",country:"Qatar",city:"Doha",type:"Public",web:"https://www.dohainstitute.edu.qa",adm:"https://www.dohainstitute.edu.qa/en/Admissions",prog:"https://www.dohainstitute.edu.qa/en/Academics",sch:"International",sch_notes:"منح/تمويل للدراسات العليا"},
+  {id:"qa_cmu",ar:"جامعة كارنيجي ميلون في قطر",en:"Carnegie Mellon University Qatar",country:"Qatar",city:"Doha",type:"Private",web:"https://www.qatar.cmu.edu",adm:"https://www.qatar.cmu.edu/admissions",prog:"",sch:"International",sch_notes:"مساعدات مالية/منح تنافسية"},
+  {id:"qa_georgetown",ar:"جامعة جورجتاون في قطر",en:"Georgetown University Qatar",country:"Qatar",city:"Doha",type:"Private",web:"https://www.qatar.georgetown.edu",adm:"https://www.qatar.georgetown.edu/admissions",prog:"",sch:"International",sch_notes:"مساعدات مالية/منح تنافسية"},
+  {id:"qa_northwestern",ar:"جامعة نورثويسترن في قطر",en:"Northwestern University in Qatar",country:"Qatar",city:"Doha",type:"Private",web:"https://www.qatar.northwestern.edu",adm:"https://www.qatar.northwestern.edu/admissions",prog:"",sch:"International",sch_notes:"مساعدات مالية/منح تنافسية"},
+  {id:"qa_weillcornell",ar:"وايل كورنيل للطب في قطر",en:"Weill Cornell Medicine Qatar",country:"Qatar",city:"Doha",type:"Private",web:"https://qatar-weill.cornell.edu",adm:"https://qatar-weill.cornell.edu/admissions",prog:"",sch:"International",sch_notes:"مساعدات مالية/منح تنافسية"},
+  {id:"qa_tamuq",ar:"جامعة تكساس إي أند أم في قطر",en:"Texas A&M University at Qatar",country:"Qatar",city:"Doha",type:"Private",web:"https://www.qatar.tamu.edu",adm:"https://www.qatar.tamu.edu/admissions",prog:"",sch:"International",sch_notes:"مساعدات مالية/منح تنافسية"},
+  {id:"qa_vcuarts",ar:"جامعة فرجينيا كومنولث في قطر",en:"VCUarts Qatar",country:"Qatar",city:"Doha",type:"Private",web:"https://qatar.vcu.edu",adm:"https://qatar.vcu.edu/admissions",prog:"",sch:"International",sch_notes:"منح/مساعدات"},
+  {id:"qa_lusail",ar:"جامعة لوسيل",en:"Lusail University",country:"Qatar",city:"Lusail",type:"Private",web:"https://www.lu.edu.qa",adm:"https://www.lu.edu.qa/admission",prog:"",sch:""},
+  {id:"qa_qf_edu",ar:"مدينة التعليم – مؤسسة قطر",en:"Qatar Foundation Education City",country:"Qatar",city:"Doha",type:"Private",web:"https://www.qf.org.qa/education",adm:"",prog:"",sch:""},
+  {id:"sa_ksu",ar:"جامعة الملك سعود",en:"King Saud University",country:"Saudi Arabia",city:"Riyadh",type:"Public",web:"https://www.ksu.edu.sa",adm:"https://admissions.ksu.edu.sa",prog:"https://www.ksu.edu.sa/colleges",sch:"Local|GCC"},
+  {id:"sa_kau",ar:"جامعة الملك عبدالعزيز",en:"King Abdulaziz University",country:"Saudi Arabia",city:"Jeddah",type:"Public",web:"https://www.kau.edu.sa",adm:"https://admissions.kau.edu.sa",prog:"",sch:"Local|GCC|International"},
+  {id:"sa_kfupm",ar:"جامعة الملك فهد للبترول والمعادن",en:"King Fahd University of Petroleum & Minerals",country:"Saudi Arabia",city:"Dhahran",type:"Public",web:"https://www.kfupm.edu.sa",adm:"https://admissions.kfupm.edu.sa",prog:"",sch:"Local|International"},
+  {id:"sa_iau",ar:"جامعة الإمام عبدالرحمن بن فيصل",en:"Imam Abdulrahman Bin Faisal University",country:"Saudi Arabia",city:"Dammam",type:"Public",web:"https://www.iau.edu.sa",adm:"",prog:"",sch:"Local"},
+  {id:"sa_imamu",ar:"جامعة الإمام محمد بن سعود",en:"Imam Mohammad Ibn Saud Islamic University",country:"Saudi Arabia",city:"Riyadh",type:"Public",web:"https://www.imamu.edu.sa",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"sa_umq",ar:"جامعة أم القرى",en:"Umm Al-Qura University",country:"Saudi Arabia",city:"Makkah",type:"Public",web:"https://uqu.edu.sa",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"sa_taibah",ar:"جامعة طيبة",en:"Taibah University",country:"Saudi Arabia",city:"Madinah",type:"Public",web:"https://www.taibahu.edu.sa",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"sa_psu",ar:"جامعة الأمير سلطان",en:"Prince Sultan University",country:"Saudi Arabia",city:"Riyadh",type:"Private",web:"https://www.psu.edu.sa",adm:"https://www.psu.edu.sa/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"sa_alfaisal",ar:"جامعة الفيصل",en:"Alfaisal University",country:"Saudi Arabia",city:"Riyadh",type:"Private",web:"https://www.alfaisal.edu",adm:"https://www.alfaisal.edu/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"sa_effat",ar:"جامعة عفت",en:"Effat University",country:"Saudi Arabia",city:"Jeddah",type:"Private",web:"https://www.effatuniversity.edu.sa",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"sa_kaust",ar:"جامعة الملك عبدالله للعلوم والتقنية",en:"KAUST",country:"Saudi Arabia",city:"Thuwal",type:"Private",web:"https://www.kaust.edu.sa",adm:"https://admissions.kaust.edu.sa",prog:"",sch:"International",sch_notes:"منح شاملة (دراسات عليا فقط)"},
+  {id:"sa_uoh",ar:"جامعة الأمير سطام بن عبدالعزيز",en:"Prince Sattam bin Abdulaziz University",country:"Saudi Arabia",city:"Al-Kharj",type:"Public",web:"https://www.psau.edu.sa",adm:"",prog:"",sch:"Local"},
+  {id:"ae_uaeu",ar:"جامعة الإمارات العربية المتحدة",en:"United Arab Emirates University",country:"UAE",city:"Al Ain",type:"Public",web:"https://www.uaeu.ac.ae",adm:"https://www.uaeu.ac.ae/en/admission",prog:"",sch:"Local|GCC|International"},
+  {id:"ae_ku",ar:"جامعة خليفة",en:"Khalifa University",country:"UAE",city:"Abu Dhabi",type:"Public",web:"https://www.ku.ac.ae",adm:"https://www.ku.ac.ae/admissions",prog:"",sch:"Local|International"},
+  {id:"ae_zu",ar:"جامعة زايد",en:"Zayed University",country:"UAE",city:"Abu Dhabi / Dubai",type:"Public",web:"https://www.zu.ac.ae",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"ae_hct",ar:"كليات التقنية العليا",en:"Higher Colleges of Technology",country:"UAE",city:"Multiple",type:"Public",web:"https://hct.ac.ae",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"ae_aus",ar:"الجامعة الأمريكية في الشارقة",en:"American University of Sharjah",country:"UAE",city:"Sharjah",type:"Private",web:"https://www.aus.edu",adm:"https://www.aus.edu/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"ae_ud",ar:"جامعة دبي",en:"University of Dubai",country:"UAE",city:"Dubai",type:"Private",web:"https://ud.ac.ae",adm:"https://ud.ac.ae/how-to-apply/",prog:"",sch:"Local|International"},
+  {id:"ae_aue",ar:"الجامعة الأمريكية في الإمارات",en:"American University in the Emirates",country:"UAE",city:"Dubai",type:"Private",web:"https://aue.ae",adm:"",prog:"",sch:"Local|International"},
+  {id:"ae_aurak",ar:"الجامعة الأمريكية في رأس الخيمة",en:"American University of Ras Al Khaimah",country:"UAE",city:"Ras Al Khaimah",type:"Private",web:"https://aurak.ac.ae",adm:"",prog:"",sch:"Local|International"},
+  {id:"ae_buid",ar:"الجامعة البريطانية في دبي",en:"British University in Dubai",country:"UAE",city:"Dubai",type:"Private",web:"https://www.buid.ac.ae",adm:"",prog:"",sch:"Local|International"},
+  {id:"ae_amity",ar:"جامعة أميتي دبي",en:"Amity University Dubai",country:"UAE",city:"Dubai",type:"Private",web:"https://amityuniversity.ae",adm:"",prog:"",sch:"Local|International"},
+  {id:"ae_mbzuai",ar:"جامعة محمد بن زايد للذكاء الاصطناعي",en:"Mohamed bin Zayed University of AI",country:"UAE",city:"Abu Dhabi",type:"Public",web:"https://mbzuai.ac.ae",adm:"https://mbzuai.ac.ae/admissions",prog:"",sch:"International",sch_notes:"منح شاملة للدراسات العليا"},
+  {id:"ae_nyuad",ar:"جامعة نيويورك أبوظبي",en:"NYU Abu Dhabi",country:"UAE",city:"Abu Dhabi",type:"Private",web:"https://nyuad.nyu.edu",adm:"https://nyuad.nyu.edu/admissions",prog:"",sch:"International",sch_notes:"منح تنافسية شاملة"},
+  {id:"ae_hbmsu",ar:"جامعة حمدان بن محمد الذكية",en:"Hamdan Bin Mohammed Smart University",country:"UAE",city:"Dubai",type:"Private",web:"https://www.hbmsu.ac.ae",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"kw_ku",ar:"جامعة الكويت",en:"Kuwait University",country:"Kuwait",city:"Kuwait City",type:"Public",web:"https://www.ku.edu.kw",adm:"https://www.ku.edu.kw/admission",prog:"",sch:"Local"},
+  {id:"kw_paaet",ar:"الهيئة العامة للتعليم التطبيقي",en:"Public Authority for Applied Education and Training",country:"Kuwait",city:"Kuwait City",type:"Public",web:"https://www.paaet.edu.kw",adm:"",prog:"",sch:"Local"},
+  {id:"kw_acm",ar:"كلية الكويت للعلوم والتكنولوجيا",en:"Kuwait College of Science and Technology",country:"Kuwait",city:"Kuwait City",type:"Public",web:"https://www.kcst.edu.kw",adm:"",prog:"",sch:"Local"},
+  {id:"kw_aum",ar:"الجامعة الأمريكية في الشرق الأوسط",en:"American University of the Middle East",country:"Kuwait",city:"Egaila",type:"Private",web:"https://www.aum.edu.kw",adm:"https://www.aum.edu.kw/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"kw_auk",ar:"الجامعة الأمريكية في الكويت",en:"American University of Kuwait",country:"Kuwait",city:"Salmiya",type:"Private",web:"https://www.auk.edu.kw",adm:"https://www.auk.edu.kw/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"kw_gust",ar:"جامعة الخليج للعلوم والتكنولوجيا",en:"Gulf University for Science and Technology",country:"Kuwait",city:"Mishref",type:"Private",web:"https://www.gust.edu.kw",adm:"https://www.gust.edu.kw/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"kw_ack",ar:"الكلية الأسترالية في الكويت",en:"Australian College of Kuwait",country:"Kuwait",city:"Mishref",type:"Private",web:"https://www.ack.edu.kw",adm:"https://www.ack.edu.kw/admissions",prog:"",sch:"Local|GCC|International"},
+  {id:"kw_kuniv",ar:"جامعة الكويت الدولية",en:"Kuwait International University",country:"Kuwait",city:"Kuwait City",type:"Private",web:"https://www.kiu.edu.kw",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"bh_uob",ar:"جامعة البحرين",en:"University of Bahrain",country:"Bahrain",city:"Sakhir",type:"Public",web:"https://www.uob.edu.bh",adm:"https://www.uob.edu.bh/admission",prog:"",sch:"Local|GCC"},
+  {id:"bh_poly",ar:"بوليتكنك البحرين",en:"Bahrain Polytechnic",country:"Bahrain",city:"Isa Town",type:"Public",web:"https://www.polytechnic.bh",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"bh_auk",ar:"الجامعة العربية المفتوحة – البحرين",en:"Arab Open University Bahrain",country:"Bahrain",city:"Manama",type:"Private",web:"https://www.aou.org.bh",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"bh_ama",ar:"جامعة AMA الدولية",en:"AMA International University Bahrain",country:"Bahrain",city:"Salmaniya",type:"Private",web:"https://www.amaiu.edu.bh",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"bh_rcsi",ar:"كلية الطب الملكية للجراحين",en:"RCSI Medical University of Bahrain",country:"Bahrain",city:"Busaiteen",type:"Private",web:"https://www.rcsi.com/bahrain",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"bh_apu",ar:"جامعة آسيا باسيفيك البحرين",en:"Applied Science University Bahrain",country:"Bahrain",city:"Isa Town",type:"Private",web:"https://www.asu.edu.bh",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"bh_gibs",ar:"كلية الخليج لإدارة الأعمال",en:"Gulf International Business School",country:"Bahrain",city:"Manama",type:"Private",web:"https://www.gibs.edu.bh",adm:"",prog:"",sch:"Local|GCC|International"},
+  {id:"om_squ",ar:"جامعة السلطان قابوس",en:"Sultan Qaboos University",country:"Oman",city:"Muscat",type:"Public",web:"https://www.squ.edu.om",adm:"https://www.squ.edu.om/admissions",prog:"",sch:"Local|GCC"},
+  {id:"om_ut",ar:"جامعة التقنية والعلوم التطبيقية",en:"University of Technology and Applied Sciences",country:"Oman",city:"Multiple",type:"Public",web:"https://www.ut.edu.om",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"om_nust",ar:"الجامعة الوطنية للعلوم والتكنولوجيا",en:"National University of Science and Technology",country:"Oman",city:"Muscat",type:"Public",web:"https://www.nust.edu.om",adm:"",prog:"",sch:"Local|GCC"},
+  {id:"om_gutech",ar:"الجامعة الألمانية للتكنولوجيا في عُمان",en:"German University of Technology Oman",country:"Oman",city:"Muscat",type:"Private",web:"https://www.gutech.edu.om",adm:"https://www.gutech.edu.om/admissions",prog:"",sch:"Local|International"},
+  {id:"om_smc",ar:"كلية الشرق الأوسط",en:"Middle East College",country:"Oman",city:"Muscat",type:"Private",web:"https://www.mec.edu.om",adm:"",prog:"",sch:"Local|International"},
+  {id:"om_aou",ar:"الجامعة العربية المفتوحة – عُمان",en:"Arab Open University Oman",country:"Oman",city:"Muscat",type:"Private",web:"https://www.aou.edu.om",adm:"",prog:"",sch:"Local|GCC"}
+];
+
+const PROGS = [
+  {uni:"qa_qu",level:"Diploma",major:"Education",lang:"Arabic"},{uni:"qa_qu",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"qa_qu",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"qa_qu",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"qa_qu",level:"Bachelor",major:"Economics",lang:"English/Arabic"},{uni:"qa_qu",level:"Bachelor",major:"Medicine",lang:"English"},{uni:"qa_qu",level:"Bachelor",major:"Pharmacy",lang:"English"},{uni:"qa_qu",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"qa_qu",level:"Master",major:"Cybersecurity",lang:"English"},{uni:"qa_qu",level:"PhD",major:"Computer Science",lang:"English"},
+  {uni:"qa_udst",level:"Diploma",major:"Information Technology",lang:"English"},{uni:"qa_udst",level:"Bachelor",major:"Cybersecurity",lang:"English"},
+  {uni:"qa_hbku",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"qa_hbku",level:"PhD",major:"Computer Science",lang:"English"},
+  {uni:"sa_ksu",level:"Diploma",major:"Education",lang:"Arabic"},{uni:"sa_ksu",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"sa_ksu",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"sa_ksu",level:"Bachelor",major:"Medicine",lang:"Arabic/English"},{uni:"sa_ksu",level:"Bachelor",major:"Pharmacy",lang:"English"},{uni:"sa_ksu",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"sa_ksu",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"sa_ksu",level:"Master",major:"Cybersecurity",lang:"English"},{uni:"sa_ksu",level:"PhD",major:"Computer Science",lang:"English"},
+  {uni:"sa_kau",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"sa_kau",level:"Bachelor",major:"Medicine",lang:"Arabic/English"},{uni:"sa_kau",level:"Master",major:"Data Science",lang:"English"},{uni:"sa_kau",level:"PhD",major:"Engineering",lang:"English"},
+  {uni:"sa_kfupm",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"sa_kfupm",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"sa_kfupm",level:"PhD",major:"Engineering",lang:"English"},
+  {uni:"sa_psu",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"sa_psu",level:"Master",major:"Cybersecurity",lang:"English"},
+  {uni:"ae_uaeu",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"ae_uaeu",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"ae_uaeu",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"ae_uaeu",level:"Bachelor",major:"Medicine",lang:"English"},{uni:"ae_uaeu",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"ae_uaeu",level:"PhD",major:"Engineering",lang:"English"},
+  {uni:"ae_ku",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"ae_ku",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"ae_ku",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"ae_ku",level:"Master",major:"Cybersecurity",lang:"English"},{uni:"ae_ku",level:"PhD",major:"Computer Science",lang:"English"},
+  {uni:"ae_zu",level:"Bachelor",major:"Education",lang:"Arabic"},{uni:"ae_zu",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"ae_zu",level:"Master",major:"Business Administration",lang:"English"},{uni:"ae_zu",level:"Master",major:"Information Technology",lang:"English"},
+  {uni:"ae_hct",level:"Diploma",major:"Information Technology",lang:"English"},{uni:"ae_hct",level:"Diploma",major:"Business",lang:"English"},{uni:"ae_hct",level:"Bachelor",major:"Engineering",lang:"English"},
+  {uni:"ae_aus",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"ae_aus",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"ae_aus",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"ae_aus",level:"Master",major:"Computer Science",lang:"English"},
+  {uni:"ae_ud",level:"Bachelor",major:"Information Technology",lang:"English"},{uni:"ae_ud",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"ae_ud",level:"Master",major:"Business Administration",lang:"English"},
+  {uni:"kw_ku",level:"Diploma",major:"Education",lang:"Arabic"},{uni:"kw_ku",level:"Bachelor",major:"Education",lang:"Arabic"},{uni:"kw_ku",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"kw_ku",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"kw_ku",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"kw_ku",level:"Bachelor",major:"Medicine",lang:"Arabic/English"},{uni:"kw_ku",level:"Bachelor",major:"Pharmacy",lang:"English"},{uni:"kw_ku",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"kw_ku",level:"Bachelor",major:"Economics",lang:"Arabic/English"},{uni:"kw_ku",level:"Master",major:"Artificial Intelligence",lang:"English"},{uni:"kw_ku",level:"Master",major:"Cybersecurity",lang:"English"},{uni:"kw_ku",level:"Master",major:"Business Administration",lang:"English"},{uni:"kw_ku",level:"PhD",major:"Computer Science",lang:"English"},{uni:"kw_ku",level:"PhD",major:"Engineering",lang:"English"},
+  {uni:"kw_aum",level:"Diploma",major:"Information Technology",lang:"English"},{uni:"kw_aum",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"kw_aum",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"kw_aum",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"kw_aum",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"kw_aum",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"kw_aum",level:"Master",major:"Information Technology",lang:"English"},{uni:"kw_aum",level:"Master",major:"Cybersecurity",lang:"English"},{uni:"kw_aum",level:"Master",major:"Business Administration",lang:"English"},
+  {uni:"bh_uob",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"bh_uob",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"bh_uob",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"bh_uob",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"bh_uob",level:"Bachelor",major:"Medicine",lang:"English"},{uni:"bh_uob",level:"Master",major:"Information Technology",lang:"English"},{uni:"bh_uob",level:"Master",major:"Business Administration",lang:"English"},{uni:"bh_uob",level:"PhD",major:"Engineering",lang:"English"},
+  {uni:"bh_poly",level:"Diploma",major:"Information Technology",lang:"English"},{uni:"bh_poly",level:"Diploma",major:"Business",lang:"English"},{uni:"bh_poly",level:"Bachelor",major:"Engineering",lang:"English"},
+  {uni:"bh_auk",level:"Bachelor",major:"Information Technology",lang:"English"},{uni:"bh_auk",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"bh_auk",level:"Master",major:"Business Administration",lang:"English"},
+  {uni:"bh_ama",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"bh_ama",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"bh_ama",level:"Master",major:"Business Administration",lang:"English"},
+  {uni:"bh_rcsi",level:"Bachelor",major:"Medicine",lang:"English"},{uni:"bh_rcsi",level:"Master",major:"Health Sciences",lang:"English"},
+  {uni:"om_squ",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"om_squ",level:"Bachelor",major:"Artificial Intelligence",lang:"English"},{uni:"om_squ",level:"Bachelor",major:"Cybersecurity",lang:"English"},{uni:"om_squ",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"om_squ",level:"Bachelor",major:"Medicine",lang:"English"},{uni:"om_squ",level:"Master",major:"Information Technology",lang:"English"},{uni:"om_squ",level:"Master",major:"Business Administration",lang:"English"},{uni:"om_squ",level:"PhD",major:"Engineering",lang:"English"},
+  {uni:"om_gutech",level:"Bachelor",major:"Engineering",lang:"English"},{uni:"om_gutech",level:"Bachelor",major:"Information Technology",lang:"English"},{uni:"om_gutech",level:"Master",major:"Engineering",lang:"English"},
+  {uni:"om_ut",level:"Diploma",major:"Information Technology",lang:"English"},{uni:"om_ut",level:"Diploma",major:"Business",lang:"English"},{uni:"om_ut",level:"Bachelor",major:"Engineering",lang:"English"},
+  {uni:"om_smc",level:"Bachelor",major:"Computer Science",lang:"English"},{uni:"om_smc",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"om_smc",level:"Master",major:"Business Administration",lang:"English"},
+  {uni:"om_aou",level:"Bachelor",major:"Information Technology",lang:"English"},{uni:"om_aou",level:"Bachelor",major:"Business Administration",lang:"English"},{uni:"om_aou",level:"Master",major:"Business Administration",lang:"English"}
+];
+
+function hasSch(s){ return s && !["","No","Unknown","nan","none","None"].includes(s.trim()); }
+
+/* ─── NAVIGATION ─────────────────────────────── */
+function gotoPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const map={home:0,search:1,compare:2,rushd:3,data:4,about:5};
+  document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='data') initCharts();
+  if(id==='compare') initCompare();
+}
+
+/* ─── SEARCH ──────────────────────────────────── */
+function renderSearch(){
+  const q   = document.getElementById('search-q').value.trim().toLowerCase();
+  const ct  = document.getElementById('f-country').value;
+  const ty  = document.getElementById('f-type').value;
+  const lv  = document.getElementById('f-level').value;
+  const mj  = document.getElementById('f-major').value;
+  const sc  = document.getElementById('f-sch').value;
+  const hasFilter = q||ct||ty||lv||mj||sc;
+
+  if(!hasFilter){
+    document.getElementById('search-results').innerHTML=`
+      <div class="empty-state"><div class="icon">🔍</div>
+      <p>ابحث للبدء</p><small>اكتب اسم جامعة أو دولة، أو استخدم الفلاتر أعلاه</small></div>`;
+    return;
+  }
+
+  let unis = UNIS.filter(u=>{
+    if(ct && u.country!==ct) return false;
+    if(ty && u.type!==ty) return false;
+    if(sc==='yes' && !hasSch(u.sch)) return false;
+    if(sc==='no'  &&  hasSch(u.sch)) return false;
+    if(q && !u.ar.includes(q) && !u.en.toLowerCase().includes(q) && !u.city.toLowerCase().includes(q) && !u.country.toLowerCase().includes(q)) return false;
+    if(lv||mj){
+      const match = PROGS.some(p=>p.uni===u.id && (!lv||p.level===lv) && (!mj||p.major===mj));
+      if(!match) return false;
+    }
+    return true;
+  }).slice(0,30);
+
+  if(!unis.length){
+    document.getElementById('search-results').innerHTML='<div style="padding:40px 0;text-align:center;color:var(--muted);">لا توجد نتائج — جرّب تعديل الفلاتر.</div>';
+    return;
+  }
+
+  let html=`<p style="font-size:13px;font-weight:600;color:var(--muted);margin:20px 0 8px;">${unis.length} نتيجة</p>`;
+  unis.forEach(u=>{
+    const langs = [...new Set(PROGS.filter(p=>p.uni===u.id).map(p=>p.lang))].slice(0,2)
+      .map(l=>`<span class="tag-pill tag-lang">${l}</span>`).join('');
+    const schTag = hasSch(u.sch)?`<span class="tag-pill tag-sch">منحة دراسية</span>`:'';
+    const typeTag= `<span class="tag-pill ${u.type==='Public'?'tag-pub':'tag-priv'}">${u.type==='Public'?'حكومية':'خاصة'}</span>`;
+    const webLink= u.web?`<a href="${u.web}" target="_blank" class="link-btn">الموقع الرسمي</a>`:'';
+    const admLink= u.adm?`<a href="${u.adm}" target="_blank" class="link-btn muted">القبول</a>`:'';
+    html+=`
+<div class="uni-row">
+  <div style="flex:1;min-width:0;">
+    <div class="uni-row-name">${u.ar} <span>— ${u.en}</span></div>
+    <div class="uni-row-loc">${u.city}, ${u.country}</div>
+    <div>${typeTag} ${schTag} ${langs}</div>
+  </div>
+  <div class="uni-row-links">${webLink}${admLink}</div>
+</div>`;
+  });
+  document.getElementById('search-results').innerHTML=html;
+}
+
+/* ─── COMPARE ─────────────────────────────────── */
+let selectedIds=[];
+
+function initCompare(){
+  const dd=document.getElementById('ms-dropdown');
+  dd.innerHTML=UNIS.map(u=>`
+    <div class="ms-option ${selectedIds.includes(u.id)?'selected':''}" onclick="toggleSelect('${u.id}','${u.ar.replace(/'/,"\\'")}')">
+      <input type="checkbox" ${selectedIds.includes(u.id)?'checked':''} onclick="event.stopPropagation()">
+      <span>${u.ar} — ${u.en} (${u.city}, ${u.country})</span>
+    </div>`).join('');
+  renderCompareTags();
+  renderCompareCards();
+}
+
+function toggleMsDropdown(){
+  document.getElementById('ms-dropdown').classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.ms-wrap')) document.getElementById('ms-dropdown')?.classList.remove('open');
+});
+
+function toggleSelect(id){
+  if(selectedIds.includes(id)){
+    selectedIds=selectedIds.filter(x=>x!==id);
+  } else {
+    if(selectedIds.length>=4) return;
+    selectedIds.push(id);
+  }
+  initCompare();
+}
+
+function renderCompareTags(){
+  const placeholder=document.getElementById('ms-placeholder');
+  const tagsEl=document.getElementById('ms-tags');
+  if(!selectedIds.length){
+    placeholder.textContent='اختر جامعات...';
+    tagsEl.innerHTML='';return;
+  }
+  placeholder.textContent=`${selectedIds.length} جامعة مختارة`;
+  tagsEl.innerHTML=selectedIds.map(id=>{
+    const u=UNIS.find(x=>x.id===id);
+    return `<div class="ms-tag">${u?u.ar:id}<button onclick="toggleSelect('${id}')">×</button></div>`;
+  }).join('');
+}
+
+function renderCompareCards(){
+  const grid=document.getElementById('comp-grid');
+  if(selectedIds.length<2){
+    grid.innerHTML=selectedIds.length===0
+      ?`<div style="text-align:center;padding:40px;color:var(--muted);">يرجى اختيار جامعتين على الأقل للمقارنة.</div>`
+      :`<div style="text-align:center;padding:40px;color:var(--muted);">اختر جامعة أخرى على الأقل للمقارنة.</div>`;
+    document.getElementById('comp-programs-section').style.display='none';
+    return;
+  }
+  const cols=`repeat(${selectedIds.length},1fr)`;
+  let html=`<div style="display:grid;grid-template-columns:${cols};gap:16px;">`;
+  selectedIds.forEach(id=>{
+    const u=UNIS.find(x=>x.id===id);
+    if(!u) return;
+    const sch=u.sch||'—';
+    html+=`
+<div class="comp-card">
+  <div class="comp-card-name">${u.ar}</div>
+  <div class="comp-card-loc">${u.city}, ${u.country}</div>
+  <div style="height:1px;background:var(--border);margin:12px 0;"></div>
+  <div class="comp-row"><span class="comp-label">النوع</span><span class="comp-val">${u.type==='Public'?'حكومية':'خاصة'}</span></div>
+  <div class="comp-row"><span class="comp-label">المنح</span><span class="comp-val">${sch}</span></div>
+  ${u.web?`<a href="${u.web}" target="_blank" class="comp-link">الموقع الرسمي</a>`:''}
+  ${u.adm?`<a href="${u.adm}" target="_blank" class="comp-link">القبول والتسجيل</a>`:''}
+</div>`;
+  });
+  html+='</div>';
+  grid.innerHTML=html;
+
+  // programs table
+  const progs=PROGS.filter(p=>selectedIds.includes(p.uni));
+  const sec=document.getElementById('comp-programs-section');
+  if(progs.length){
+    sec.style.display='block';
+    let tbl=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;text-align:right;">
+      <thead><tr style="border-bottom:2px solid var(--border);">
+        <th style="padding:10px;font-weight:700;color:var(--muted);">الجامعة</th>
+        <th style="padding:10px;font-weight:700;color:var(--muted);">المرحلة</th>
+        <th style="padding:10px;font-weight:700;color:var(--muted);">التخصص</th>
+        <th style="padding:10px;font-weight:700;color:var(--muted);">اللغة</th>
+      </tr></thead><tbody>`;
+    progs.forEach(p=>{
+      const u=UNIS.find(x=>x.id===p.uni);
+      tbl+=`<tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:9px 10px;">${u?u.ar:p.uni}</td>
+        <td style="padding:9px 10px;">${p.level}</td>
+        <td style="padding:9px 10px;">${p.major}</td>
+        <td style="padding:9px 10px;direction:ltr;text-align:left;">${p.lang}</td>
+      </tr>`;
+    });
+    tbl+='</tbody></table></div>';
+    document.getElementById('comp-programs-table').innerHTML=tbl;
+  } else {
+    sec.style.display='none';
+  }
+}
+
+/* ─── RUSHD / CHAT ────────────────────────────── */
+const chatHistory=[
+  {role:'assistant',text:'مرحباً، أنا رُشد.\n\nأخبرني عن نفسك:\n- التخصص الذي تريده\n- الدولة المفضلة\n- معدلك التقريبي\n- هل عندك IELTS وكم درجتك؟\n\nوسأرشّح لك الجامعات المناسبة.'}
+];
+
+function renderChat(){
+  const wrap=document.getElementById('chat-wrap');
+  wrap.innerHTML=chatHistory.map(m=>`
+<div class="chat-msg ${m.role}">
+  <div class="chat-avatar">${m.role==='assistant'?'🧭':'🎓'}</div>
+  <div class="chat-bubble">${m.text.replace(/\n/g,'<br>')}</div>
+</div>`).join('');
+  wrap.scrollTop=wrap.scrollHeight;
+  document.getElementById('new-chat-btn').style.display=chatHistory.length>1?'inline-block':'none';
+}
+
+function sendChat(){
+  const inp=document.getElementById('chat-input');
+  const txt=inp.value.trim();
+  if(!txt) return;
+  chatHistory.push({role:'user',text:txt});
+  inp.value='';
+  renderChat();
+  setTimeout(()=>{
+    const reply=generateReply(txt);
+    chatHistory.push({role:'assistant',text:reply});
+    renderChat();
+  },900);
+}
+
+function generateReply(msg){
+  const lower=msg.toLowerCase();
+  const countries={qatar:'Qatar',كويت:'Kuwait',بحرين:'Bahrain',عمان:'Oman','saudi':'Saudi Arabia','سعودية':'Saudi Arabia','إمارات':'UAE','uae':'UAE'};
+  let country='';
+  Object.entries(countries).forEach(([k,v])=>{ if(lower.includes(k)||msg.includes(k)) country=v; });
+  const majors=['Engineering','Computer Science','Artificial Intelligence','Medicine','Business Administration','Cybersecurity','Information Technology'];
+  let major='';
+  majors.forEach(m=>{ if(lower.includes(m.toLowerCase())||msg.includes('هندس')||msg.includes('طب')||msg.includes('ذكاء')||msg.includes('أعمال')) major=m; });
+  if(msg.includes('هندس')) major='Engineering';
+  if(msg.includes('طب')||msg.includes('طبيب')) major='Medicine';
+  if(msg.includes('ذكاء اصطناعي')) major='Artificial Intelligence';
+  if(msg.includes('أعمال')||msg.includes('إدارة')) major='Business Administration';
+
+  let unis=UNIS.filter(u=>{
+    if(country && u.country!==country) return false;
+    return true;
+  });
+  if(major) unis=unis.filter(u=>PROGS.some(p=>p.uni===u.id&&p.major===major));
+  if(!unis.length) unis=UNIS.filter(u=>hasSch(u.sch)).slice(0,3);
+  const top=unis.slice(0,3);
+  if(!top.length) return 'أخبرني أكثر عن التخصص والدولة التي تريدها حتى أتمكن من مساعدتك.';
+  let reply='بناءً على ملفك، إليك أبرز توصياتي:\n\n';
+  top.forEach((u,i)=>{
+    reply+=`${i+1}. **${u.ar}** (${u.city}, ${u.country})\n`;
+    if(hasSch(u.sch)) reply+=`   🎓 تتوفر منح: ${u.sch}\n`;
+    reply+='\n';
+  });
+  reply+='هل تريد مزيداً من التفاصيل عن أي من هذه الجامعات؟';
+  return reply;
+}
+
+function quickMatch(){
+  const country=document.getElementById('qm-country').value;
+  const major=document.getElementById('qm-major').value.trim();
+  if(!major){ alert('يرجى إدخال التخصص.'); return; }
+  let unis=UNIS.filter(u=>{
+    if(country && u.country!==country) return false;
+    return PROGS.some(p=>p.uni===u.id && p.major.toLowerCase().includes(major.toLowerCase()));
+  });
+  if(!unis.length) unis=UNIS.filter(u=>(!country||u.country===country)&&hasSch(u.sch)).slice(0,3);
+  const top=unis.slice(0,3);
+  const cols=top.length||1;
+  let html=`<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:16px;">`;
+  top.forEach(u=>{
+    html+=`<div class="qm-card">
+      <div class="qm-name">${u.ar}</div>
+      <div class="qm-loc">${u.city}, ${u.country}</div>
+      <div class="qm-reason">يتوفر برنامج ${major} في ${u.type==='Public'?'جامعة حكومية':'جامعة خاصة'}.</div>
+      <div>${hasSch(u.sch)?'<span class="tag-pill tag-sch">منحة دراسية</span>':''}</div>
+    </div>`;
+  });
+  html+='</div>';
+  document.getElementById('qm-results').innerHTML=html;
+}
+
+function resetChat(){
+  chatHistory.splice(0,chatHistory.length,{role:'assistant',text:'مرحباً، أنا رُشد.\n\nأخبرني عن نفسك:\n- التخصص الذي تريده\n- الدولة المفضلة\n- معدلك التقريبي\n- هل عندك IELTS وكم درجتك؟\n\nوسأرشّح لك الجامعات المناسبة.'});
+  renderChat();
+}
+
+/* ─── CHARTS ──────────────────────────────────── */
+let chartsInited=false;
+function initCharts(){
+  if(chartsInited) return;
+  chartsInited=true;
+
+  const NAV='#1D2D44', BLUE='#81AED9', SEC='#2D4060', LIGHT='#E3EEF7';
+  const font={family:'IBM Plex Sans Arabic'};
+
+  // Country
+  const byCountry={Qatar:0,'Saudi Arabia':0,UAE:0,Kuwait:0,Bahrain:0,Oman:0};
+  UNIS.forEach(u=>{ if(byCountry[u.country]!==undefined) byCountry[u.country]++; });
+  new Chart(document.getElementById('chart-country'),{
+    type:'bar',
+    data:{labels:Object.keys(byCountry),datasets:[{data:Object.values(byCountry),backgroundColor:NAV,borderWidth:0}]},
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{display:false}}}}
+  });
+
+  // Type
+  const byType={Public:0,Private:0};
+  UNIS.forEach(u=>byType[u.type]=(byType[u.type]||0)+1);
+  new Chart(document.getElementById('chart-type'),{
+    type:'doughnut',
+    data:{labels:['حكومية','خاصة'],datasets:[{data:Object.values(byType),backgroundColor:[BLUE,NAV],borderWidth:0}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font,color:'#6B7F96'}}},cutout:'55%'}
+  });
+
+  // Majors
+  const majorCount={};
+  PROGS.forEach(p=>{ majorCount[p.major]=(majorCount[p.major]||0)+1; });
+  const topMajors=Object.entries(majorCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  new Chart(document.getElementById('chart-majors'),{
+    type:'bar',
+    data:{labels:topMajors.map(x=>x[0]),datasets:[{data:topMajors.map(x=>x[1]),backgroundColor:SEC,borderWidth:0}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{maxRotation:30,font:{size:10}}},y:{grid:{display:false}}}}
+  });
+
+  // Gauge (scholarships %)
+  const schCount=UNIS.filter(u=>hasSch(u.sch)).length;
+  const pct=Math.round(schCount/UNIS.length*100);
+  new Chart(document.getElementById('chart-gauge'),{
+    type:'doughnut',
+    data:{datasets:[{data:[pct,100-pct],backgroundColor:[NAV,LIGHT],borderWidth:0}]},
+    options:{responsive:true,cutout:'70%',plugins:{legend:{display:false},tooltip:{enabled:false}}}
+  });
+  document.querySelector('.gauge-num').textContent=pct+'%';
+
+  // Language
+  const byLang={};
+  PROGS.forEach(p=>{ (p.lang||'').split('/').forEach(l=>{ l=l.trim(); if(l) byLang[l]=(byLang[l]||0)+1; }); });
+  new Chart(document.getElementById('chart-lang'),{
+    type:'bar',
+    data:{labels:Object.keys(byLang),datasets:[{data:Object.values(byLang),backgroundColor:SEC,borderWidth:0}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{display:false}}}}
+  });
+
+  // Scholarships by country
+  const schByCtry={Qatar:{Local:0,GCC:0,International:0},'Saudi Arabia':{Local:0,GCC:0,International:0},UAE:{Local:0,GCC:0,International:0},Kuwait:{Local:0,GCC:0,International:0},Bahrain:{Local:0,GCC:0,International:0},Oman:{Local:0,GCC:0,International:0}};
+  UNIS.forEach(u=>{
+    if(!schByCtry[u.country]) return;
+    if(u.sch&&u.sch.includes('Local'))         schByCtry[u.country].Local++;
+    if(u.sch&&u.sch.includes('GCC'))           schByCtry[u.country].GCC++;
+    if(u.sch&&u.sch.includes('International')) schByCtry[u.country].International++;
+  });
+  new Chart(document.getElementById('chart-sch-country'),{
+    type:'bar',
+    data:{
+      labels:Object.keys(schByCtry),
+      datasets:[
+        {label:'Local',data:Object.values(schByCtry).map(x=>x.Local),backgroundColor:BLUE,borderWidth:0},
+        {label:'GCC',data:Object.values(schByCtry).map(x=>x.GCC),backgroundColor:NAV,borderWidth:0},
+        {label:'International',data:Object.values(schByCtry).map(x=>x.International),backgroundColor:SEC,borderWidth:0}
+      ]
+    },
+    options:{indexAxis:'y',responsive:true,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{display:false}}},
+      plugins:{legend:{position:'bottom',labels:{font,color:'#6B7F96'}}}}
+  });
+}
+
+/* ─── CONTACT ─────────────────────────────────── */
+function submitContact(){
+  document.getElementById('contact-success').style.display='block';
+  setTimeout(()=>document.getElementById('contact-success').style.display='none',4000);
+}
+
+/* ─── INIT ────────────────────────────────────── */
+renderChat();
+</script>
+</body>
+</html>
